@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Getopt::Long qw(GetOptions :config no_auto_abbrev no_ignore_case);
-use List::MoreUtils qw/uniq/;
+use List::MoreUtils qw/uniq any/;
 use IO::String;
 use IPC::Run3;
 use Template::Tiny;
@@ -67,19 +67,46 @@ my $gather_definitions = sub {
 
 my $generate_capture = sub {
     my ($typedef_for, $functions, $headers) = @_;
-    my $f_template = <<'END_TEMPLATE';
-/* [% f.index %] */
-extern "C" [% f.result %] [% f.name %] ([% signature %]) {
-   pushOp([% f.index %]);
 
+    my $stub_gen = sub {
+        my ($f) = @_;
+#        my $io = IO::String->new;
+        my $params = $f->{params};
+        my $simple_params = ! any { /\*/ } map { $_->{type} }  @$params;
+        my $signature = join(', ', map { $_->{type}.' '.$_->{name} } @$params);
+        my $body = !@$params
+            ? "/* empty body, nothing to pack */"
+            : $simple_params ? do {
+                my $b = <<"BODY_END";
+  const uint32_t _size = @{[ join('+', map{ 'sizeof('.$_->{type}.')' } @$params) ]};
+  void* _ptr = _i->preallocate(_size);
+BODY_END
+                for my $p (@$params) {
+                    my $ptr_name = "_" . $p->{name} . "_ptr";
+                    my $ptr_type = $p->{type};
+                    my $pack_p = <<"PACK_PARAM_END";
+  $ptr_type * $ptr_name = ($ptr_type *) _ptr; *${ptr_name}++ = @{[ $p->{name} ]}; _ptr = (void*) $ptr_name;
+PACK_PARAM_END
+                    $b .= $pack_p;
+                }
+                $b;
+            }
+            : "LOG(\"UNIMPLEMENTED: @{[ $f->{name} ]} \");"
+            ;
+        my $result =<< "RESULT_END";
+/* @{[ $f->{index} ]} */
+extern "C" @{[ $f->{result} ]} @{[ $f->{name} ]} ($signature) {
+  Instruction* _i = Interceptor::get_instance().create_instruction(@{[ $f->{index} ]});
+$body
 }
-END_TEMPLATE
+RESULT_END
+    };
 
     my $typedef_template = <<'TYPEDEF_TEMPLATE_END';
 typedef [% type %] [% alias %];
 TYPEDEF_TEMPLATE_END
     my $tt = Template::Tiny->new;
-    print '#include "generated.h"', "\n";
+    print '#include "Interceptor.h"', "\n";
     #my @common_headers = qw{GL/gl.h GL/glx.h GL/glu.h};
     #print '#include "', $_ ,'"', "\n" for(@common_headers);
 
@@ -92,7 +119,7 @@ TYPEDEF_TEMPLATE_END
         map  { @{ $_->{params} } }
         @$functions
         ;
-i
+
     for (@used_types) {
         $has_type{$_} = 1 if exists $typedef_for->{$_}
     }
@@ -101,8 +128,7 @@ i
     }
 
     for my $f (@$functions) {
-        my $signature = join(', ', map { $_->{type}.' '.$_->{name} } @{ $f->{params} });
-        $tt->process(\$f_template, { f => $f, signature => $signature });
+        print $stub_gen->($f);
     }
 };
 

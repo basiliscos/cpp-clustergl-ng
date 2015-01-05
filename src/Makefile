@@ -14,10 +14,9 @@ CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -O3 -Wextra -g -fPIC -fvisibili
 LDFLAGS=-lconfuse -llzo2 -lz `sdl-config --cflags --libs` -lSDL_net -lconfuse -lGLEW 
 LINUX_LDFLAGS=-lGL -lGLU
 
-#Compile
 all: $(OBJS) $(NAME)
 
-Interceptor.o: Interceptor.cpp capture_inc.cpp
+Interceptor.o: Interceptor.cpp capture.cpp
 
 capture.cpp: ../code-gen.pl
 	../code-gen.pl -r capture > capture.cpp

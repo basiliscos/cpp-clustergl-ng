@@ -1,0 +1,25 @@
+#include "Instruction.h"
+
+#define START_ARGS_MARKER 0x23C35D;
+//#define END_ARGS_MARKER 0x5F4D67B;
+
+Instruction::Instruction(uint32_t instruction_id):id(instruction_id){
+  serialized_args = NULL;
+  args_size = 0;
+}
+
+Instruction::~Instruction(){
+  if(args_size && serialized_args) {
+    free(serialized_args);
+  }
+}
+
+void* Instruction::preallocate(uint32_t size){
+  void* ptr = malloc(size + sizeof(uint32_t) * 2);
+  uint32_t* uint32_ptr = (uint32_t*)ptr;
+  *uint32_ptr++ = START_ARGS_MARKER;
+  *uint32_ptr++ = size;
+  serialized_args = ptr;
+  args_size = size;
+  return (void*)uint32_ptr;
+}
