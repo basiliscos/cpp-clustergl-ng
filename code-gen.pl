@@ -46,7 +46,7 @@ my $gather_definitions = sub {
                     $line = <$io>;
                     $end_declaration = !defined($line) || $line =~/^\|-/;
                     last if $end_declaration;
-                    if ($line =~ / \|-ParmVarDecl.+ (\w+) '(.+)':'.+'$/) {
+                    if ($line =~ / \|-ParmVarDecl.+ (\w+) '(.+?)'.*$/) {
                         push @params, { name => $1, type=> $2 };
                     }
                 }
@@ -91,14 +91,19 @@ PACK_PARAM_END
                 }
                 $b;
             }
-            : "LOG(\"UNIMPLEMENTED: @{[ $f->{name} ]} \");"
+            : "LOG(\"UNIMPLEMENTED(complex input data): @{[ $f->{name} ]} \");"
             ;
+        if ($f->{result} ne 'void') {
+            $body .= "\nLOG(\"UNIMPLEMENTED(return type): @{[ $f->{name} ]} \");"
+        }
         my $result =<< "RESULT_END";
+
 /* @{[ $f->{index} ]} */
 extern "C" @{[ $f->{result} ]} @{[ $f->{name} ]} ($signature) {
   Instruction* _i = Interceptor::get_instance().create_instruction(@{[ $f->{index} ]});
 $body
 }
+
 RESULT_END
     };
 
