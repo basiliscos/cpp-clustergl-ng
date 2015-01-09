@@ -5,11 +5,14 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include <sys/uio.h>
+
 #include <vector>
 #include <memory>
   
 using std::vector;
 using std::auto_ptr;
+
 
 #define LOG printf("[\e[32m%20s:%5d\e[m]\t", __FILE__, __LINE__); printf
 

@@ -18,6 +18,9 @@ all: $(OBJS) $(NAME)
 
 Interceptor.o: Interceptor.cpp capture.cpp
 
+gl.h.xml: /usr/include/GL/gl.h
+	cscan --xml $^ > $@
+
 capture.cpp: ../code-gen.pl
 	../code-gen.pl -r capture > capture.cpp
 
