@@ -94,6 +94,17 @@ my %function_for = (
                 Parameter->new(name => 'data', typedef => $typedef_for{GLvoid}, is_pointer => 1),
             ],
         ),
+        FunctionDef->new(
+            id          => 4,
+            name        => 'glVertexPointer',
+            return_type => 'void',
+            parameters  => [
+                Parameter->new(name => 'size', typedef => $typedef_for{GLint} ),
+                Parameter->new(name => 'type', typedef => $typedef_for{GLenum} ),
+                Parameter->new(name => 'stride', typedef => $typedef_for{GLsizei} ),
+                Parameter->new(name => 'ptr', typedef => $typedef_for{GLvoid}, is_pointer => 1, is_const => 1),
+            ],
+        ),
     )
 );
 

@@ -91,9 +91,9 @@ test_codegen {
             ok $data;
             print "data: $data\n";
             like $data, qr/\Qvoid packer_glTexImage2D(Instruction *_instruction, GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels){\E/;
-            like $data, qr/\Qconst uint32_t _size_pixels = glTexImage2D_pixels_size( target, level, internalFormat, width, height, border, format, pixels);\E/;
+            like $data, qr/\Qconst uint32_t _size_of_pixels = glTexImage2D_pixels_size( target, level, internalFormat, width, height, border, format, pixels);\E/;
             like $data, qr/\QGLenum* _format_ptr = (GLenum*) _ptr; *_format_ptr++ = format; _ptr = (void*)(_format_ptr);\E/;
-            like $data, qr/\Qmemcpy(_ptr, pixels, _size_pixels);\E/;
+            like $data, qr/\Qmemcpy(_ptr, pixels, _size_of_pixels);\E/;
         };
 
         subtest "glReadPixels (void* ptr)" => sub {
@@ -103,6 +103,17 @@ test_codegen {
             print "data: $data\n";
             like $data, qr/\QGLvoid ** _data_ptr = (GLvoid **) _ptr; *_data_ptr++ = data; _ptr = (void*)(_data_ptr);\E/;
         };
+
+        subtest "glVertexPointer (size/ptr parameter name)" => sub {
+            create_generator([$functiondef_for->{glVertexPointer}], [])
+                ->('packer')->(Scalar->new(\my $data));
+            ok $data;
+            print "data: $data\n";
+            like $data, qr/\Qconst uint32_t _size_of_ptr = glVertexPointer_ptr_size( size, type, stride, ptr);\E/;
+            like $data, qr/\QGLint* _size_ptr = (GLint*) _ptr; *_size_ptr++ = size; _ptr = (void*)(_size_ptr);\E/;
+            like $data, qr/\Qmemcpy(_ptr, ptr, _size_of_ptr); char* _ptr_ptr = (char*)(_ptr); _ptr_ptr += _size_of_ptr; _ptr = (void*)(_ptr_ptr);\E/;
+        };
+
     };
 };
 

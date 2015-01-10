@@ -57,11 +57,11 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', map { $_->type . '
 ? } else {
 ?   my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
 ?   for my $p (@const_ptr_params) {
-      const uint32_t _size_<?= $p->name ?> = <?= join('_', $f->name, $p->name, 'size') . '( ' . $orig_params . ')' ?>;
+      const uint32_t _size_of_<?= $p->name ?> = <?= join('_', $f->name, $p->name, 'size') . '( ' . $orig_params . ')' ?>;
 ?   }
 ?   my %is_const_ptr = map { $_->name => 1 } @const_ptr_params;
 ?   my @sizes = map { $_->is_pointer && $_->is_const
-?      ? '_size_' . $_->name
+?      ? '_size_of_' . $_->name
 ?      : 'sizeof(' . $_->type . ')'
 ?   } @$params;
     const uint32_t _size = <?= join('+', @sizes ); ?>;
@@ -69,7 +69,7 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', map { $_->type . '
 ?   for my $p (@$params) {
 ?     my $ptr_name = '_' . $p->name . '_ptr';
 ?     if ($is_const_ptr{$p->name}) {
-?       my $p_size = '_size_' . $p->name;
+?       my $p_size = '_size_of_' . $p->name;
         memcpy(_ptr, <?= $p->name ?>, <?= $p_size ?>); char* <?= $ptr_name ?> = (char*)(_ptr); <?= $ptr_name ?> += <?= $p_size ?>; _ptr = (void*)(<?= $ptr_name ?>);
 ?     } else {
 ?       my $p_type = $p->type . '*';
