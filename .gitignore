@@ -1,3 +1,5 @@
 *.o
 *.so
 src/capture.*
+src/generated*
+
