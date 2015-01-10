@@ -12,12 +12,6 @@ use aliased qw/ClusterGLNG::FunctionDef/;
 use aliased qw/ClusterGLNG::Parameter/;
 use aliased qw/ClusterGLNG::TypeDef/;
 
-use Log::Any::Adapter;
-use Log::Dispatch;
-Log::Any::Adapter->set( 'Dispatch', dispatcher => Log::Dispatch->new(
-    outputs => [[ 'Screen', min_level => 'debug' ]])
-);
-
 subtest "simpe typedefs" => sub {
     create_generator([],
         [
@@ -76,7 +70,7 @@ subtest "packers" => sub {
         )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/void packer_glPushMatrix\(void \*ptr\){/;
+        like $data, qr/void packer_glPushMatrix\(Instruction \*_instruction\){/;
         like $data, qr/LOG.+"NO packer for packer_glPushMatrix/;
         like $data, qr/abort/;
     };
@@ -100,8 +94,8 @@ subtest "packers" => sub {
         )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\QGLboolean packer_glIsEnabled(void *ptr, GLenum cap){\E/;
-        like $data, qr/\QGLenum* _cap_ptr = (GLenum*) ptr; *_cap_ptr++ = cap; ptr = (void*)(_cap_ptr);\E/;
+        like $data, qr/\QGLboolean packer_glIsEnabled(Instruction *_instruction, GLenum cap){\E/;
+        like $data, qr/\QGLenum* _cap_ptr = (GLenum*) _ptr; *_cap_ptr++ = cap; _ptr = (void*)(_cap_ptr);\E/;
     };
 
     subtest "glClear, 1 simple arg" => sub {
@@ -123,8 +117,10 @@ subtest "packers" => sub {
         )->('packer')->(IO::Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid packer_glClear(void *ptr, GLbitfield mask){\E/;
-        like $data, qr/\QGLbitfield* _mask_ptr = (GLbitfield*) ptr; *_mask_ptr++ = mask; ptr = (void*)(_mask_ptr);\E/;
+        like $data, qr/\Qvoid packer_glClear(Instruction *_instruction, GLbitfield mask){\E/;
+        like $data, qr/\Qconst uint32_t _size = sizeof(GLbitfield);\E/;
+        like $data, qr/\Qvoid* _ptr = _instruction->preallocate(_size);\E/;
+        like $data, qr/\QGLbitfield* _mask_ptr = (GLbitfield*) _ptr; *_mask_ptr++ = mask; _ptr = (void*)(_mask_ptr);\E/;
         like $data, qr/\Q}\E/;
     };
 
@@ -151,8 +147,10 @@ subtest "packers" => sub {
         )->('packer')->(IO::Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid packer_glTexImage2D(void *ptr, GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels){\E/;
-        like $data, qr/\QGLenum* _format_ptr = (GLenum*) ptr; *_format_ptr++ = format; ptr = (void*)(_format_ptr);\E/;
+        like $data, qr/\Qvoid packer_glTexImage2D(Instruction *_instruction, GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels){\E/;
+        like $data, qr/\Qconst uint32_t _size_pixels = glTexImage2D_pixels_size( target, level, internalFormat, width, height, border, format, pixels);\E/;
+        like $data, qr/\QGLenum* _format_ptr = (GLenum*) _ptr; *_format_ptr++ = format; _ptr = (void*)(_format_ptr);\E/;
+        like $data, qr/\Qmemcpy(_ptr, pixels, _size_pixels);\E/;
     };
 };
 

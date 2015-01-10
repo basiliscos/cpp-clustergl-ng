@@ -28,22 +28,37 @@ sub create_generator {
             for my $f (@$functions) {
                 my $function_name = "packer_" . $f->name;
                 my $params = $f->parameters;
-                my $signature = join(', ', 'void *ptr', map {
-                    $_->type .' ' .$_->name
-                } @$params);
-                $output->print(render_mt(<<'SIGNATURE_END', $f, $function_name, $signature)->as_string);
-? my ($f, $name, $signature,) = @_;
+                $output->print(render_mt(<<'SIGNATURE_END', $f, $function_name)->as_string);
+? my ($f, $name) = @_;
+? my $params = $f->parameters;
+? my $orig_params = join(', ', map { $_->name } @$params)
 
 /* <?= $f->id ?> */
-<?= $f->return_type ?> <?= $name ?>(<?= $signature ?>){
-? my $params = $f->parameters;
+<?= $f->return_type ?> <?= $name ?>(<?= join(', ', 'Instruction *_instruction', map { $_->type . ' ' .$_->name } @$params) ?>){
 ? if (! @$params) {
   LOG("NO packer for <?= $name ?>\n");
   abort();
 ? } else {
+?   my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
+?   for my $p (@const_ptr_params) {
+      const uint32_t _size_<?= $p->name ?> = <?= join('_', $f->name, $p->name, 'size') . '( ' . $orig_params . ')' ?>;
+?   }
+?   my %is_const_ptr = map { $_->name => 1 } @const_ptr_params;
+?   my @sizes = map { $_->is_pointer && $_->is_const
+?      ? '_size_' . $_->name
+?      : 'sizeof(' . $_->type . ')'
+?   } @$params;
+    const uint32_t _size = <?= join('+', @sizes ); ?>;
+    void* _ptr = _instruction->preallocate(_size);
 ?   for my $p (@$params) {
-?     my ($p_name, $p_type) = ('_' . $p->name . '_ptr', $p->type . '*');
-      <?= $p_type ?> <?= $p_name ?> = (<?= $p_type ?>) ptr; *<?= $p_name ?>++ = <?= $p->name ?>; ptr = (void*)(<?= $p_name ?>);
+?     my $ptr_name = '_' . $p->name . '_ptr';
+?     if ($is_const_ptr{$p->name}) {
+?       my $p_size = '_size_' . $p->name;
+        memcpy(_ptr, <?= $p->name ?>, <?= $p_size ?>); char* <?= $ptr_name ?> = (char*)(_ptr); <?= $ptr_name ?> += <?= $p_size ?>; _ptr = (void*)(<?= $ptr_name ?>);
+?     } else {
+?       my $p_type = $p->type . '*';
+        <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) _ptr; *<?= $ptr_name ?>++ = <?= $p->name ?>; _ptr = (void*)(<?= $ptr_name ?>);
+?     }
 ?   }
 ? }
 }
