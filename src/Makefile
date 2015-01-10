@@ -16,7 +16,7 @@ LINUX_LDFLAGS=-lGL -lGLU
 
 all: $(OBJS) $(NAME)
 
-Interceptor.o: Interceptor.cpp capture.cpp
+Interceptor.o: Interceptor.cpp
 
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@
@@ -29,7 +29,4 @@ $(NAME): $(OBJS)
 	$(CXX) -shared -o ../runtime/lib$@-capture.so $(OBJS_SHARED) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 
 clean:
-	rm -f *.o
-	rm -f ../runtime/$(NAME)
-	rm -f ../runtime/lib$(NAME).so.1
-	rm -r capture.*
+	@rm -f *.o ../runtime/$(NAME) ../runtime/lib$(NAME).so generated*
