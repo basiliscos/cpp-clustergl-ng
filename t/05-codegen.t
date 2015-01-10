@@ -152,6 +152,31 @@ subtest "packers" => sub {
         like $data, qr/\QGLenum* _format_ptr = (GLenum*) _ptr; *_format_ptr++ = format; _ptr = (void*)(_format_ptr);\E/;
         like $data, qr/\Qmemcpy(_ptr, pixels, _size_pixels);\E/;
     };
+
+    subtest "glReadPixels" => sub {
+        create_generator(
+            [
+                FunctionDef->new(
+                    id          => 4,
+                    name        => 'glReadPixels',
+                    return_type => 'void',
+                    parameters  => [
+                        Parameter->new(name => 'x', typedef => $typedef_for{GLint} ),
+                        Parameter->new(name => 'y', typedef => $typedef_for{GLint} ),
+                        Parameter->new(name => 'width', typedef => $typedef_for{GLsizei} ),
+                        Parameter->new(name => 'height', typedef => $typedef_for{GLsizei} ),
+                        Parameter->new(name => 'format', typedef => $typedef_for{GLenum}),
+                        Parameter->new(name => 'type', typedef => $typedef_for{GLenum}),
+                        Parameter->new(name => 'data', typedef => $typedef_for{GLvoid}, is_pointer => 1),
+                    ],
+                )
+             ],
+            []
+        )->('packer')->(IO::Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\QGLvoid ** _data_ptr = (GLvoid **) _ptr; *_data_ptr++ = data; _ptr = (void*)(_data_ptr);\E/;
+    };
 };
 
 
