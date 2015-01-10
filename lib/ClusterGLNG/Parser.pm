@@ -72,11 +72,11 @@ sub parse {
             next if (!$typedef && $type && $type eq 'void');
 
             my ($const) = $xpc->findnodes(
-                "//typeSpecifier1[\@text='$typedef_id']/../descendant::typeQualifier[\@text='const']",
+                "descendant::typeSpecifier1[\@text='$typedef_id']/../descendant::typeQualifier[\@text='const']",
                 $param_node);
 
             my ($pointer) = $xpc->findnodes(
-                "//directDeclarator[\@text='$param_name']/../pointer",
+                "descendant::directDeclarator[\@text='$param_name']/../pointer",
                 $param_name,
             );
 
