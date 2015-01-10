@@ -31,6 +31,10 @@ sub create_generator {
 /* <?= $f->id ?> */
 <?= $f->return_type ?> <?= $f->name ?>(<?= $orig_params ?>);
 void packer_<?= $f->name ?>(<?= $packer_params ?>);
+? my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
+? for my $p (@const_ptr_params) {
+uint32_t <?= join('_', $f->name, $p->name, 'size') ?>(<?= $orig_params ?>); /* have to be provided manually */
+? }
 FUNDECL_END
             }
             $output->print("\n") if(@$functions);
