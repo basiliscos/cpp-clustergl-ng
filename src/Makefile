@@ -21,10 +21,16 @@ Interceptor.o: Interceptor.cpp
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@
 
-capture.cpp: ../code-gen.pl
-	../code-gen.pl -r capture > capture.cpp
+gl.h.cache: gl.h.xml
+	PERL5LIB=../lib ../script/code-gen.pl -a $^ -f '^gl' -c $@
 
-$(NAME): $(OBJS)
+generated.h: gl.h.cache
+	PERL5LIB=../lib ../script/code-gen.pl -c $^ -r declaration -o .
+
+generated_packer.cpp: gl.h.cache generated.h
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packer -o .
+
+$(NAME): $(OBJS) generated_packer.o
 #	$(CXX) -o ../runtime/$@-render $(OBJS_APP) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 	$(CXX) -shared -o ../runtime/lib$@-capture.so $(OBJS_SHARED) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 
