@@ -15,13 +15,25 @@ sub create_generator {
     my ($functions, $typedefs) = @_;
 
     my %generator_for = (
-        typedefs => sub {
+        declaration => sub {
             my ($output) = @_;
             state $renderer = build_mt('<?= $_[0]->declaration ?>');
             for my $t (@$typedefs) {
                 $output->print($renderer->($t), "\n");
             }
-            $output->print("\n");
+            $output->print("\n") if(@$typedefs);
+            for my $f (@$functions) {
+                $output->print(render_mt(<<'FUNDECL_END', $f)->as_string);
+? my ($f) = @_;
+? my $params = $f->parameters;
+? my $orig_params = join(', ', map { $_->type . ' ' . $_->name } @$params);
+? my $packer_params = join(', ', 'Instruction *_instruction', map {  $_->type . ' ' . $_->name } @$params);
+/* <?= $f->id ?> */
+<?= $f->return_type ?> <?= $f->name ?>(<?= $orig_params ?>);
+void packer_<?= $f->name ?>(<?= $packer_params ?>);
+FUNDECL_END
+            }
+            $output->print("\n") if(@$functions);
         },
         packer => sub {
             my ($output) = @_;
@@ -34,7 +46,7 @@ sub create_generator {
 ? my $orig_params = join(', ', map { $_->name } @$params)
 
 /* <?= $f->id ?> */
-<?= $f->return_type ?> <?= $name ?>(<?= join(', ', 'Instruction *_instruction', map { $_->type . ' ' .$_->name } @$params) ?>){
+void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', map { $_->type . ' ' .$_->name } @$params) ?>){
 ? if (! @$params) {
   LOG("NO packer for <?= $name ?>\n");
   abort();

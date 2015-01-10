@@ -13,13 +13,34 @@ use aliased qw/IO::Scalar/;
 test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
-    subtest "simpe typedefs" => sub {
-        create_generator([], [ $typedef_for->{GLint}, $typedef_for->{GLvoid} ])
-            ->('typedefs')->(Scalar->new(\my $data));
-        ok $data;
-        print "data: $data\n";
-        like $data, qr/typedef int GLint;/m;
-        like $data, qr/typedef void GLvoid;/m;
+    subtest "declaration/header" => sub {
+
+        subtest "simpe typedefs" => sub {
+            create_generator([], [ $typedef_for->{GLint}, $typedef_for->{GLvoid} ])
+                ->('declaration')->(Scalar->new(\my $data));
+            ok $data;
+            print "data: $data\n";
+            like $data, qr/typedef int GLint;/m;
+            like $data, qr/typedef void GLvoid;/m;
+        };
+
+        subtest "glClear declartion" => sub {
+            create_generator([$functiondef_for->{glClear}], [])
+                ->('declaration')->(Scalar->new(\my $data));
+            ok $data;
+            print "data: $data\n";
+            like $data, qr/\Qvoid glClear(GLbitfield mask);\E/;
+            like $data, qr/\Qvoid packer_glClear(Instruction *_instruction, GLbitfield mask);\E/;
+        };
+
+        subtest "glIsEnabled declartion" => sub {
+            create_generator([$functiondef_for->{glIsEnabled}], [])
+                ->('declaration')->(Scalar->new(\my $data));
+            ok $data;
+            print "data: $data\n";
+            like $data, qr/\QGLboolean glIsEnabled(GLenum cap);\E/;
+            like $data, qr/\Qvoid packer_glIsEnabled(Instruction *_instruction, GLenum cap);\E/;
+        };
     };
 
     subtest "packers" => sub {
@@ -38,7 +59,7 @@ test_codegen {
                 ->('packer')->(Scalar->new(\my $data));
             ok $data;
             print "data: $data\n";
-            like $data, qr/\QGLboolean packer_glIsEnabled(Instruction *_instruction, GLenum cap){\E/;
+            like $data, qr/\Qvoid packer_glIsEnabled(Instruction *_instruction, GLenum cap){\E/;
             like $data, qr/\QGLenum* _cap_ptr = (GLenum*) _ptr; *_cap_ptr++ = cap; _ptr = (void*)(_cap_ptr);\E/;
         };
 
