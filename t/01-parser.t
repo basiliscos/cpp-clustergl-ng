@@ -10,7 +10,7 @@ use ClusterGLNG::Parser qw/parse/;
 my $xml = path(qw/t data sample.xml/)->slurp;
 my ($functions, $typedefs) = parse($xml, qr/^gl/);
 
-is scalar(@$functions), 2, "has 2 functions";
+is scalar(@$functions), 3, "has 2 functions";
 is scalar(@$typedefs), 4, "has 4 typedefs";
 
 subtest "GLint typedef" => sub {
@@ -108,6 +108,17 @@ subtest "glPopAttrib function definition" => sub {
 
     my $params = $f->parameters;
     is scalar(@$params), 0, "has no parameters";
+};
+
+subtest "glGetString function definition" => sub {
+    my ($f) = grep { $_->name eq 'glGetString' } @$functions;
+    ok $f;
+    is $f->id, 2;
+    is $f->name, 'glGetString', "name is correct";
+    is $f->return_type, 'const GLubyte *', "return type is correct";
+
+    my $params = $f->parameters;
+    is scalar(@$params), 1, "has 1 parameter";
 };
 
 done_testing;

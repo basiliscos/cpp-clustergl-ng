@@ -10,6 +10,7 @@
   <fdecls>
     <fdecl id="glTexImage2D" text="void glTexImage2D( GLenum target, GLint level,&#10;                                    GLint internalFormat,&#10;                                    GLsizei width, GLsizei height,&#10;                                    GLint border, GLenum format, GLenum type,&#10;                                    const GLvoid *pixels )" file="/usr/include/GL/gl.h"/>
     <fdecl id="glPopAttrib" text="void glPopAttrib( void )" file="/usr/include/GL/gl.h"/>
+    <fdecl id="glGetString" text="const GLubyte * glGetString( GLenum name )" file="/usr/include/GL/gl.h"/>
   </fdecls>
   <ast>
 	  
@@ -613,6 +614,78 @@
               </initDeclaratorList>
             </declarationCheckinitDeclaratorList>
             <SEMICOLON start="3566" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
+          </declarationCheck>
+        </declaration>
+      </externalDeclaration>
+
+      <!-- glGetString -->
+      <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="43" text="const GLubyte * glGetString( GLenum name );">
+        <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="43" text="const GLubyte * glGetString( GLenum name );">
+          <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="43" text="const GLubyte * glGetString( GLenum name );">
+            <declarationCheckdeclarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="13" text="const GLubyte">
+              <declarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="13" text="const GLubyte">
+                <declarationSpecifiers1 isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="13" text="const GLubyte">
+                  <declarationSpecifiers0 isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="5" text="const">
+                    <typeQualifier isLexeme="false" file="/usr/include/GL/gl.h" start="3908" length="5" text="const">
+                      <CONST start="3908" length="5" text="const" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                    </typeQualifier>
+                  </declarationSpecifiers0>
+                  <typeSpecifier1 isLexeme="false" file="/usr/include/GL/gl.h" start="3914" length="7" text="GLubyte">
+                    <TYPEDEF_NAME start="3914" length="7" text="GLubyte" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                  </typeSpecifier1>
+                </declarationSpecifiers1>
+              </declarationSpecifiers>
+            </declarationCheckdeclarationSpecifiers>
+            <declarationCheckinitDeclaratorList isLexeme="false" file="/usr/include/GL/gl.h" start="3922" length="28" text="* glGetString( GLenum name )">
+              <initDeclaratorList isLexeme="false" file="/usr/include/GL/gl.h" start="3922" length="28" text="* glGetString( GLenum name )">
+                <initDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="3922" length="28" text="* glGetString( GLenum name )">
+                  <declarator isLexeme="false" file="/usr/include/GL/gl.h" start="3922" length="28" text="* glGetString( GLenum name )">
+                    <pointer isLexeme="false" file="/usr/include/GL/gl.h" start="3922" length="1" text="*">
+                      <msvsAttributeAny isLexeme="false" file=""/>
+                      <STAR start="3922" length="1" text="*" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                    </pointer>
+                    <msvsAttributeAny isLexeme="false" file=""/>
+                    <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="3924" length="26" text="glGetString( GLenum name )">
+                      <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="3924" length="11" text="glGetString">
+                        <directDeclaratorIdentifier isLexeme="false" file="/usr/include/GL/gl.h" start="3924" length="11" text="glGetString">
+                          <IDENTIFIER start="3924" length="11" text="glGetString" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                        </directDeclaratorIdentifier>
+                      </directDeclarator>
+                      <LPAREN_SCOPE start="3935" length="1" text="(" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                      <parameterTypeList isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="11" text="GLenum name">
+                        <parameterList isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="11" text="GLenum name">
+                          <parameterDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="11" text="GLenum name">
+                            <parameterDeclarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="11" text="GLenum name">
+                              <parameterDeclarationdeclarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="6" text="GLenum">
+                                <declarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="6" text="GLenum">
+                                  <declarationSpecifiers1 isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="6" text="GLenum">
+                                    <typeSpecifier1 isLexeme="false" file="/usr/include/GL/gl.h" start="3937" length="6" text="GLenum">
+                                      <TYPEDEF_NAME start="3937" length="6" text="GLenum" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </typeSpecifier1>
+                                  </declarationSpecifiers1>
+                                </declarationSpecifiers>
+                              </parameterDeclarationdeclarationSpecifiers>
+                              <parameterDeclarationCheckDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="3944" length="4" text="name">
+                                <declarator isLexeme="false" file="/usr/include/GL/gl.h" start="3944" length="4" text="name">
+                                  <msvsAttributeAny isLexeme="false" file=""/>
+                                  <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="3944" length="4" text="name">
+                                    <directDeclaratorIdentifier isLexeme="false" file="/usr/include/GL/gl.h" start="3944" length="4" text="name">
+                                      <IDENTIFIER start="3944" length="4" text="name" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </directDeclaratorIdentifier>
+                                  </directDeclarator>
+                                </declarator>
+                              </parameterDeclarationCheckDeclarator>
+                            </parameterDeclarationCheck>
+                          </parameterDeclaration>
+                        </parameterList>
+                      </parameterTypeList>
+                      <RPAREN_SCOPE start="3949" length="1" text=")" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                    </directDeclarator>
+                  </declarator>
+                </initDeclarator>
+              </initDeclaratorList>
+            </declarationCheckinitDeclaratorList>
+            <SEMICOLON start="3950" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
       </externalDeclaration>

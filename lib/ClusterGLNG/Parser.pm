@@ -51,6 +51,10 @@ sub parse {
         die "Cannot find return type for $function_name"
             unless defined $return_type;
 
+        if ($xpc->findnodes('descendant::initDeclarator/declarator/pointer/STAR', $declaraton_node)) {
+            $return_type .= ' *';
+        }
+
         my @params;
         for my $param_node ($xpc->findnodes('descendant::parameterDeclaration', $declaraton_node) ) {
             my $param_name = $xpc->findvalue('descendant::IDENTIFIER/@text', $param_node);
