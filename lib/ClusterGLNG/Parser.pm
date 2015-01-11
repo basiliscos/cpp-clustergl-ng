@@ -21,12 +21,12 @@ sub parse {
     my (@functions, @typedefs);
 
     my %typedef_for;
-    for my $td_decl ($xpc->findnodes('//typedef_hash/typedef')) {
+    for my $td_decl ($xpc->findnodes('/cscan/typedef_hash/typedef')) {
         my $typedef_name = $td_decl->getAttribute('id');
-        my $xpath = '//externalDeclaration[descendant::IDENTIFIER[@text="'. $typedef_name .'"]]/@text';
+        my $xpath = '/cscan/ast/translationUnit/externalDeclaration[descendant::IDENTIFIER[@text="'. $typedef_name .'"]]/@text';
         my $declaration = $xpc->findvalue($xpath);
         die ("Cannot find typedef for $typedef_name")
-            unless defined $declaration;
+            unless $declaration;
         my $typedef = ClusterGLNG::TypeDef->new({
             name        => $typedef_name,
             declaration => $declaration,
@@ -37,11 +37,11 @@ sub parse {
     }
     my %has_use_of;
 
-    my @function_declarations = $xpc->findnodes('//fdecls/fdecl');
+    my @function_declarations = $xpc->findnodes('/cscan/fdecls/fdecl');
     for my $f_decl (@function_declarations) {
         my $function_name = $f_decl->getAttribute('id');
         next unless $function_name =~ /$fname_filter/;
-        my $decl_xpath = '//externalDeclaration[descendant::IDENTIFIER[@text="'. $function_name .'"]]';
+        my $decl_xpath = '/cscan/ast/translationUnit/externalDeclaration[descendant::IDENTIFIER[@text="'. $function_name .'"]]';
         my ($declaraton_node) = $xpc->findnodes($decl_xpath);
         die "Cannot find function declaration for $function_name"
             unless defined $declaraton_node;
@@ -80,8 +80,8 @@ sub parse {
                 $param_node);
 
             my ($pointer) = $xpc->findnodes(
-                "descendant::directDeclarator[\@text='$param_name']/../pointer",
-                $param_name,
+                "descendant::parameterDeclarationCheckDeclarator[descendant::IDENTIFIER[\@text='$param_name']]/descendant::pointer",
+                $param_node,
             );
 
             my $parameter = ClusterGLNG::Parameter->new({

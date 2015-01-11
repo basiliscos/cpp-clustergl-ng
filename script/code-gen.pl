@@ -44,6 +44,7 @@ elsif ($role && $cache_file && $output_dir) {
     print "$role\n";
     if ($role eq 'declaration') {
         my $file = path($output_dir, 'generated.h');
+        my $last_id = scalar(@$functions) -1;
         print "generating $file\n";
         my $fh = $file->filehandle('>');
         print $fh <<START;
@@ -52,8 +53,9 @@ elsif ($role && $cache_file && $output_dir) {
 
 #include "Instruction.h"
 
+#define LAST_GENERATED_ID = $last_id;
 START
-        create_generator($functions, $typedefs)->('declaration')->($fh);
+        create_generator($functions, $typedefs)->($role)->($fh);
         print $fh <<END;
 #endif /* GENERATED_H */
 END
@@ -63,14 +65,25 @@ END
         my $file = path($output_dir, 'generated_packer.cpp');
         print "generating $file\n";
         my $fh = $file->filehandle('>');
-        my $last_id = scalar($@functions) -1;
         print $fh <<START;
 #include "generated.h"
 #include "common.h"
 
-#define LAST_GENERATED_ID = $last_id;
 START
-        create_generator($functions, $typedefs)->('packer')->($fh);
+        create_generator($functions, $typedefs)->($role)->($fh);
+        print "$file successfully created\n";
+    }
+    elsif ($role eq 'capturer') {
+        my $file = path($output_dir, 'generated_capturer.cpp');
+        print "generating $file\n";
+        my $fh = $file->filehandle('>');
+        print $fh <<START;
+#include "generated.h"
+#include "common.h"
+#include "Interceptor.h"
+
+START
+        create_generator($functions, $typedefs)->($role)->($fh);
         print "$file successfully created\n";
     }
     else {

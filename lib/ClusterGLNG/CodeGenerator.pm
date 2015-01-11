@@ -49,17 +49,17 @@ FUNDECL_END
 ? my $packer_params = $has_packer &&
 ?       join(', ', 'my_instruction', map { $_->name } @$params);
 ? my $packer_name = "packer_" . $f->name;
-? my $need_reply = $f->return_type ne 'void' || grep { $_->is_pointer && $_->is_const } @$params;
+? my $need_reply = $f->return_type ne 'void' || grep { $_->is_pointer && !$_->is_const } @$params;
 
 /* <?= $f->id ?>, has_packer: <?= $has_packer ?>, need reply: <?= $need_reply ?> */
 <?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', map { $_->type . ' ' .$_->name } @$params) ?>){
-   Interceptor *my_interceptor = Interceptor::get_instance();
-   Instruction *my_instruction = my_interceptor->create_instruction(<?= $f->id ?>);
+   Interceptor& my_interceptor = Interceptor::get_instance();
+   Instruction *my_instruction = my_interceptor.create_instruction(<?= $f->id ?>);
 ? if ($has_packer) {
      <?= $packer_name ?>(<?= $packer_params ?>);
 ? }
 ? if ($need_reply) {
-    my_interceptor->intercept_with_reply(my_instruction);
+    my_interceptor.intercept_with_reply(my_instruction);
     <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
 ?   if ($f->return_type ne 'void') {
       return *reply;
@@ -68,7 +68,7 @@ FUNDECL_END
       abort();
 ?   }
 ? } else {
-   my_interceptor->intercept(my_instruction);
+   my_interceptor.intercept(my_instruction);
 ? }
 }
 
