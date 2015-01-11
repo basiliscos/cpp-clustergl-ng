@@ -27,9 +27,11 @@ int Interceptor::intercept_sdl_init(unsigned int flags) {
 }
 
 Instruction* Interceptor::create_instruction(uint32_t id){
-  Instruction* i = new Instruction(id);
-  queue.push_back(i);
-  return i;
+  return new Instruction(id);
+}
+
+void Interceptor::intercept(Instruction* i){
+
 }
 
 extern "C" int SDL_Init(unsigned int flags) {

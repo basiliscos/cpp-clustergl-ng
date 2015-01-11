@@ -39,6 +39,42 @@ FUNDECL_END
             }
             $output->print("\n") if(@$functions);
         },
+        capturer => sub {
+            my ($output) = @_;
+            for my $f (@$functions) {
+                $output->print(render_mt(<<'CAPTURE_END', $f)->as_string);
+? my ($f) = @_;
+? my $params = $f->parameters;
+? my $has_packer = scalar(@$params);
+? my $packer_params = $has_packer &&
+?       join(', ', 'my_instruction', map { $_->name } @$params);
+? my $packer_name = "packer_" . $f->name;
+? my $need_reply = $f->return_type ne 'void' || grep { $_->is_pointer && $_->is_const } @$params;
+
+/* <?= $f->id ?>, has_packer: <?= $has_packer ?>, need reply: <?= $need_reply ?> */
+<?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', map { $_->type . ' ' .$_->name } @$params) ?>){
+   Interceptor *my_interceptor = Interceptor::get_instance();
+   Instruction *my_instruction = my_interceptor->create_instruction(<?= $f->id ?>);
+? if ($has_packer) {
+     <?= $packer_name ?>(<?= $packer_params ?>);
+? }
+? if ($need_reply) {
+    my_interceptor->intercept_with_reply(my_instruction);
+    <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
+?   if ($f->return_type ne 'void') {
+      return *reply;
+?   } else {
+      LOG("<?= $f->name ?> is unimplemeted\n");
+      abort();
+?   }
+? } else {
+   my_interceptor->intercept(my_instruction);
+? }
+}
+
+CAPTURE_END
+            }
+        },
         packer => sub {
             my ($output) = @_;
             for my $f (@$functions) {

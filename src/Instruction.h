@@ -8,6 +8,8 @@ class Instruction {
   
   void* serialized_args;
   uint32_t args_size;
+  void* reply;
+  bool reply_owner;
   
  public:
   const uint32_t id;
@@ -15,6 +17,8 @@ class Instruction {
   ~Instruction();
   
   void* preallocate(uint32_t size);
+  void store_reply(void* reply, bool reply_owner);
+  void* get_reply();
 };
 
 #endif /* _INSTRUCTION_H */
