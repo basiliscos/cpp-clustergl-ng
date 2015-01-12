@@ -10,8 +10,8 @@ use ClusterGLNG::Parser qw/parse/;
 my $xml = path(qw/t data sample.xml/)->slurp;
 my ($functions, $typedefs) = parse($xml, qr/^gl/);
 
-is scalar(@$functions), 3, "has 2 functions";
-is scalar(@$typedefs), 4, "has 4 typedefs";
+is scalar(@$functions), 4, "has correct number of functions";
+is scalar(@$typedefs), 5, "has correct number of typedefs";
 
 subtest "GLint typedef" => sub {
     my ($gl_typedef) = grep { $_->name eq 'GLint' } @$typedefs;
