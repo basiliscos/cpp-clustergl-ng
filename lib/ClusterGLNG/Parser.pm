@@ -84,11 +84,18 @@ sub parse {
                 $param_node,
             );
 
+            my $fixed_size = $xpc->findvalue(
+                "descendant::directDeclarator/descendant::LBRACKET[following-sibling::RBRACKET]"
+                    . "/following-sibling::assignmentExpression/descendant::I_CONSTANT/\@text",
+                $param_node
+            ) || 0;
+
             my $parameter = ClusterGLNG::Parameter->new({
                 name       => $param_name,
                 typedef    => $typedef,
                 is_pointer => defined($pointer),
                 is_const   => defined($const),
+                fixed_size => $fixed_size,
             });
             push @params, $parameter;
         }

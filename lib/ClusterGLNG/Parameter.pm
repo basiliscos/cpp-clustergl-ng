@@ -5,9 +5,12 @@ use Moo;
 
 has name => (is => 'ro', required => 1);
 
-has is_pointer => (is => 'ro', default => sub{ 0 } );
+has is_pointer => (is => 'ro', default => sub { 0 } );
 
-has is_const => (is => 'ro', default => sub{ 0 });
+has is_const => (is => 'ro', default => sub { 0 });
+
+# const GLdouble m[16]
+has fixed_size => (is => 'ro', default => sub { 0 } );
 
 has typedef => (is => 'ro', required => 1);
 

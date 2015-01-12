@@ -119,6 +119,22 @@ subtest "glGetString function definition" => sub {
 
     my $params = $f->parameters;
     is scalar(@$params), 1, "has 1 parameter";
+    is $params->[0]->fixed_size, 0;
+};
+
+subtest "glLoadTransposeMatrixd function definition" => sub {
+    my ($f) = grep { $_->name eq 'glLoadTransposeMatrixd' } @$functions;
+    ok $f;
+    is $f->id, 3;
+    is $f->name, 'glLoadTransposeMatrixd', "name is correct";
+    is $f->return_type, 'void', "return type is correct";
+
+    my $params = $f->parameters;
+    is scalar(@$params), 1, "has 1 parameter";
+    my $p = $params->[0];
+    is $p->name, 'm';
+    ok $p->is_const;
+    is $p->fixed_size, 16;
 };
 
 done_testing;
