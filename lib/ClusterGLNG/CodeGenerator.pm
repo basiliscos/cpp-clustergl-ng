@@ -49,7 +49,9 @@ FUNDECL_END
 ? my $packer_params = $has_packer &&
 ?       join(', ', 'my_instruction', map { $_->name } @$params);
 ? my $packer_name = "packer_" . $f->name;
-? my $need_reply = $f->return_type ne 'void' || grep { $_->is_pointer && !$_->is_const } @$params;
+? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my $need_reply = $f->return_type ne 'void' || @pointer_params;
+
 
 /* <?= $f->id ?>, has_packer: <?= $has_packer ?>, need reply: <?= $need_reply ?> */
 <?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', map { $_->type . ' ' .$_->name } @$params) ?>){
@@ -61,10 +63,11 @@ FUNDECL_END
 ? if ($need_reply) {
     my_interceptor.intercept_with_reply(my_instruction);
     <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
-?   if ($f->return_type ne 'void') {
+?   if ($f->return_type ne 'void' && !@pointer_params) {
       return *reply;
 ?   } else {
-      LOG("<?= $f->name ?> is unimplemeted\n");
+?     my $pointer_names = join(', ', map { $_->name } @pointer_params);
+      LOG("<?= $f->name ?> is unimplemeted: for <?= $pointer_names ?>\n");
       abort();
 ?   }
 ? } else {
