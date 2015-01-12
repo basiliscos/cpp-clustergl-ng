@@ -72,6 +72,16 @@ test_codegen {
         like $data, qr/\QGLint* _size_ptr = (GLint*) _ptr; *_size_ptr++ = size; _ptr = (void*)(_size_ptr);\E/;
         like $data, qr/\Qmemcpy(_ptr, ptr, _size_of_ptr); char* _ptr_ptr = (char*)(_ptr); _ptr_ptr += _size_of_ptr; _ptr = (void*)(_ptr_ptr);\E/;
     };
+
+    subtest "glLoadTransposeMatrixd, fixed size param" => sub {
+        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
+            ->('packer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\Qvoid packer_glLoadTransposeMatrixd(Instruction *_instruction, const GLdouble m[16]){\E/;
+        like $data, qr/\Qconst uint32_t _size_of_m = sizeof(const GLdouble) * 16;\E/;
+        like $data, qr/\Qmemcpy(_ptr, m, _size_of_m); char* _m_ptr = (char*)(_ptr); _m_ptr += _size_of_m; _ptr = (void*)(_m_ptr);\E/;
+    };
 };
 
 done_testing;

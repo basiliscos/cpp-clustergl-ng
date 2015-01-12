@@ -32,6 +32,10 @@ my %typedef_for = (
             name        => 'GLvoid',
             declaration => 'typedef void GLvoid;',
         ),
+        TypeDef->new(
+            name        => 'GLdouble',
+            declaration => 'typedef double GLdouble;',
+        ),
     )
 );
 
@@ -111,6 +115,19 @@ my %function_for = (
             return_type => 'void',
             parameters  => [
                 Parameter->new(name => 'v', typedef => $typedef_for{GLint}, is_pointer => 1, is_const => 1 ),
+            ],
+        ),
+        FunctionDef->new(
+            id          => 5,
+            name        => 'glLoadTransposeMatrixd',
+            return_type => 'void',
+            parameters  => [
+                Parameter->new(name       => 'm',
+                               typedef    => $typedef_for{GLdouble},
+                               is_pointer => 0,
+                               is_const   => 1,
+                               fixed_size => 16,
+                           ),
             ],
         ),
     )

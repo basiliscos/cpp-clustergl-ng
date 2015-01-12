@@ -49,6 +49,15 @@ test_codegen {
         like $data, qr/\Qvoid packer_glTexImage2D(Instruction *_instruction, GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels);\E/;
         like $data, qr/\Quint32_t glTexImage2D_pixels_size(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels);\E/;
     };
+
+    subtest "glLoadTransposeMatrixd declaration" => sub {
+        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
+            ->('declaration')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\Qvoid glLoadTransposeMatrixd(const GLdouble m[16]);\E/;
+        like $data, qr/\Qvoid packer_glLoadTransposeMatrixd(Instruction *_instruction, const GLdouble m[16]);\E/;
+    };
 };
 
 done_testing;
