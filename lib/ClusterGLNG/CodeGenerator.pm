@@ -67,10 +67,6 @@ FUNDECL_END
       <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
 ?   if ($f->return_type ne 'void' && !@pointer_params) {
       return *reply;
-?   } else {
-?     my $pointer_names = join(', ', map { $_->name } @pointer_params);
-      LOG("<?= $f->name ?> is unimplemeted: for <?= $pointer_names ?>\n");
-      abort();
 ?   }
 ? } else {
       my_interceptor.intercept(my_instruction);
