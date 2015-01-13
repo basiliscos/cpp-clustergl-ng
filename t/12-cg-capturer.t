@@ -57,6 +57,15 @@ test_codegen {
         like $data, qr/\Qreturn *reply;\E/;
     };
 
+    subtest "glLoadTransposeMatrixd, submittion" => sub {
+        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
+            ->('capturer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\Qvoid glLoadTransposeMatrixd(const GLdouble m[16]){\E/;
+        like $data, qr/\Qpacker_glLoadTransposeMatrixd(my_instruction, m);\E/;
+        like $data, qr/\Qmy_interceptor.intercept(my_instruction);\E/;
+    };
 };
 
 done_testing;
