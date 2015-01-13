@@ -26,7 +26,7 @@ sub create_generator {
                 $output->print(render_mt(<<'FUNDECL_END', $f)->as_string);
 ? my ($f) = @_;
 ? my $params = $f->parameters;
-? my @declared_params = map { $_->type.' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
+? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
 ? my $orig_params = join(', ', @declared_params);
 ? my $packer_params = join(', ', 'Instruction *_instruction', @declared_params);
 /* <?= $f->id ?> */
@@ -47,7 +47,7 @@ FUNDECL_END
 ? my ($f) = @_;
 ? my $params = $f->parameters;
 ? my $has_packer = scalar(@$params);
-? my @declared_params = map { $_->type.' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
+? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
 ? my $packer_params = $has_packer &&
 ?       join(', ', 'my_instruction', map { $_->name } @$params);
 ? my $packer_name = "packer_" . $f->name;
@@ -88,7 +88,7 @@ CAPTURE_END
                 $output->print(render_mt(<<'SIGNATURE_END', $f, $function_name)->as_string);
 ? my ($f, $name) = @_;
 ? my $params = $f->parameters;
-? my @declared_params = map { $_->type.' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
+? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
 ? my $orig_params = join(', ', map { $_->name } @$params)
 
 /* <?= $f->id ?> */
@@ -97,31 +97,13 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', @declared_params) 
         LOG("NO packer for <?= $name ?>\n");
         abort();
 ? } else {
-?   my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
-?   for my $p (@const_ptr_params) {
-        const uint32_t _size_of_<?= $p->name ?> = <?= join('_', $f->name, $p->name, 'size') . '( ' . $orig_params . ')' ?>;
-?   }
-?   my %is_const_ptr = map { $_->name => 1 } @const_ptr_params;
-?   my @fixed_size_params = grep { $_->fixed_size } @$params;
-?   for my $p (@fixed_size_params) {
-        const uint32_t _size_of_<?= $p->name ?> = sizeof(<?= $p->type ?>) * <?= $p->fixed_size ?>;
-?   }
-?   my %is_fixed_size = map { $_->name => 1 } @fixed_size_params;
-?   my @sizes = map { ($_->is_pointer && $_->is_const) || $_->fixed_size
-?      ? '_size_of_' . $_->name
-?      : 'sizeof(' . $_->type . ')'
-?   } @$params;
+?   my @sizes = map { 'sizeof(' . $_->type(0).($_->fixed_size? '*' : '').'*)' } @$params;
         const uint32_t _size = <?= join('+', @sizes ); ?>;
         void* _ptr = _instruction->preallocate(_size);
 ?   for my $p (@$params) {
-?     my $ptr_name = '_' . $p->name . '_ptr';
-?     if ($is_const_ptr{$p->name} || $is_fixed_size{$p->name}) {
-?       my $p_size = '_size_of_' . $p->name;
-        memcpy(_ptr, <?= $p->name ?>, <?= $p_size ?>); char* <?= $ptr_name ?> = (char*)(_ptr); <?= $ptr_name ?> += <?= $p_size ?>; _ptr = (void*)(<?= $ptr_name ?>);
-?     } else {
-?       my $p_type = $p->type . '*';
+?       my $p_type = $p->type(1) . ($p->fixed_size? '*' : '') . '*';
+?       my $ptr_name = '_' . $p->name . '_ptr';
         <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) _ptr; *<?= $ptr_name ?>++ = <?= $p->name ?>; _ptr = (void*)(<?= $ptr_name ?>);
-?     }
 ?   }
 ? }
 }

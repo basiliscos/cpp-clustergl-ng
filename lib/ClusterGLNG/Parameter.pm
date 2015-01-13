@@ -15,9 +15,10 @@ has fixed_size => (is => 'ro', default => sub { 0 } );
 has typedef => (is => 'ro', required => 1);
 
 sub type {
-    my $self = shift;
+    my ($self, $use_const) = @_;
+    $use_const //= 0;
     my $type =
-        ($self->is_const ? 'const ' : '')
+        ($use_const && $self->is_const ? 'const ' : '')
         . $self->typedef->name
         . ($self->is_pointer? ' *' : '');
     return $type;
