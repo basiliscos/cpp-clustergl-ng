@@ -6,8 +6,9 @@
 class Instruction {
  private:
   
-  void* serialized_args;
-  uint32_t args_size;
+  void* packed_args;
+  uint32_t pack_size;
+  int ref_count;
   void* reply;
   bool reply_owner;
   
@@ -19,6 +20,10 @@ class Instruction {
   void* preallocate(uint32_t size);
   void store_reply(void* reply, bool reply_owner);
   void* get_reply();
+
+  int references_count();
+  void acquire();
+  void release();
 };
 
 #endif /* _INSTRUCTION_H */

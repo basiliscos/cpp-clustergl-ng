@@ -2,6 +2,7 @@
 #define _INTERCEPTOR_H
 
 #include "Instruction.h"
+#include "Processor.h"
 
 class Interceptor
 {
