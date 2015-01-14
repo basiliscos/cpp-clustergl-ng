@@ -25,9 +25,13 @@ Instruction::~Instruction(){
   }
 }
 
-void* Instruction::preallocate(uint32_t size){
+void* Instruction::pack_allocate(uint32_t size){
   packed_args = malloc(size);
   pack_size = size;
+  return packed_args;
+}
+
+void* Instruction::get_packed() {
   return packed_args;
 }
 

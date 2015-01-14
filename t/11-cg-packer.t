@@ -30,7 +30,7 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qvoid packer_glIsEnabled(Instruction *_instruction, GLenum cap){\E/;
         like $data, qr/\Qconst uint32_t _size = sizeof(GLenum*);\E/;
-        like $data, qr/\Qvoid* _ptr = _instruction->preallocate(_size);\E/;
+        like $data, qr/\Qvoid* _ptr = _instruction->pack_allocate(_size);\E/;
         like $data, qr/\QGLenum* _cap_ptr = (GLenum*) _ptr; *_cap_ptr++ = cap; _ptr = (void*)(_cap_ptr);\E/;
     };
 

@@ -95,7 +95,7 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', @declared_params) 
 ? } else {
 ?   my @sizes = map { 'sizeof(' . $_->type(0).($_->fixed_size? '*' : '').'*)' } @$params;
         const uint32_t _size = <?= join('+', @sizes ); ?>;
-        void* _ptr = _instruction->preallocate(_size);
+        void* _ptr = _instruction->pack_allocate(_size);
 ?   for my $p (@$params) {
 ?       my $p_type = $p->type(1) . ($p->fixed_size? '*' : '') . '*';
 ?       my $ptr_name = '_' . $p->name . '_ptr';

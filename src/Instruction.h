@@ -17,7 +17,9 @@ class Instruction {
   Instruction(uint32_t instruction_id);
   ~Instruction();
   
-  void* preallocate(uint32_t size);
+  void* pack_allocate(uint32_t size);
+  void* get_packed();
+
   void store_reply(void* reply, bool reply_owner);
   void* get_reply();
 
