@@ -9,6 +9,9 @@ class Interceptor
  private:
   int (*original_SDL_Init)(unsigned int flags);
   Interceptor();
+  Instruction* initial_instruction;
+  Instruction* last_instruction;
+  vector<Processor*> processors;
  public:
   static Interceptor& get_instance();
   int intercept_sdl_init(unsigned int flags);

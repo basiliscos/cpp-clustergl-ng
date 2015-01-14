@@ -4,8 +4,8 @@
 #include "common.h"
 #include "Instruction.h"
 
-#define DIRECTION_FORWARD  = 1
-#define DIRECTION_BACKWARD = 2
+#define DIRECTION_FORWARD  1
+#define DIRECTION_BACKWARD 2
 
 class Processor {
  public:

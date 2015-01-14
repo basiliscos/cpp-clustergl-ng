@@ -8,6 +8,7 @@
 
 #include <sys/uio.h>
 
+#include <iterator>
 #include <vector>
 #include <memory>
   

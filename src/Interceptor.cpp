@@ -9,6 +9,7 @@ Interceptor& Interceptor::get_instance() {
 
 Interceptor::Interceptor(){
   original_SDL_Init = NULL;
+  initial_instruction = last_instruction = NULL;
 };
 
 int Interceptor::intercept_sdl_init(unsigned int flags) {
@@ -27,11 +28,44 @@ int Interceptor::intercept_sdl_init(unsigned int flags) {
 }
 
 Instruction* Interceptor::create_instruction(uint32_t id){
-  return new Instruction(id);
+  initial_instruction = new Instruction(id);
+  return initial_instruction;
 }
 
 void Interceptor::intercept(Instruction* i){
+  vector<Instruction*> queue;
+  queue.push_back(i);
+  for (vector<Processor*>::iterator it = processors.begin(); it != processors.end(); it++) {
+    (*it)->submit(queue);
+  }
+  for (vector<Instruction*>::iterator it = queue.begin(); it != queue.end(); it++) {
+    if((*it)->references_count() != 1) {
+      LOG("Warning, ref_count != for instruction %d\n", (*it)->id);
+    }
+    delete *it;
+  }
+}
 
+void Interceptor::intercept_with_reply(Instruction* i){
+  vector<Processor*>::iterator it;
+  // advance forward
+  for (it = processors.begin(); it != processors.end(); it++) {
+    if ( (*it)->query(i, DIRECTION_FORWARD) ) {
+      break;
+    }
+  }
+
+  // advance backward
+  do {
+    it--;
+    (*it)->query(i, DIRECTION_BACKWARD);
+  } while( it != processors.begin() );
+
+  // remove previous reply
+  if (last_instruction) delete last_instruction;
+  last_instruction = i;
+  // return control back to capturer, with assumption that i contains
+  // necessary reply
 }
 
 extern "C" int SDL_Init(unsigned int flags) {
