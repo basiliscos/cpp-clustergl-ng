@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+
 class Instruction {
  private:
   
@@ -27,5 +28,7 @@ class Instruction {
   void acquire();
   void release();
 };
+
+typedef void(*CGLNG_simple_function)(Instruction* i);
 
 #endif /* _INSTRUCTION_H */

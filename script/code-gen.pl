@@ -53,7 +53,7 @@ elsif ($role && $cache_file && $output_dir) {
 
 #include "Instruction.h"
 
-#define LAST_GENERATED_ID = $last_id;
+#define LAST_GENERATED_ID $last_id
 START
         create_generator($functions, $typedefs)->($role)->($fh);
         print $fh <<END;

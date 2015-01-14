@@ -36,4 +36,15 @@ class Processor {
     virtual bool query(Instruction* i, int direction) = 0;
 };
 
+class TextProcessor: public Processor {
+ private:
+  void** text_functions;
+ public:
+  TextProcessor();
+  ~TextProcessor();
+
+  bool submit(vector<Instruction* > &queue);
+  bool query(Instruction* i, int direction);
+};
+
 #endif /* _PROCESSOR_H */
