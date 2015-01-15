@@ -35,6 +35,10 @@ generated_packer.cpp: gl.h.cache generated.h
 generated_capturer.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r capturer -o .
 
+generated_packed_dumper.cpp: gl.h.cache generated.h
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_dumper -o .
+
+
 $(NAME): $(OBJS) generated_packer.o generated_capturer.o
 #	$(CXX) -o ../runtime/$@-render $(OBJS_APP) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 	$(CXX) -shared -o ../runtime/lib$@-capture.so $(OBJS_SHARED) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)

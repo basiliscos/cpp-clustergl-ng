@@ -86,6 +86,20 @@ START
         create_generator($functions, $typedefs)->($role)->($fh);
         print "$file successfully created\n";
     }
+    elsif ($role eq 'packed_dumper') {
+        my $file = path($output_dir, 'generated_packed_dumper.cpp');
+        print "generating $file\n";
+        my $fh = $file->filehandle('>');
+        print $fh <<START;
+#include "generated.h"
+#include "common.h"
+#include "Instruction.h"
+#include "Processor.h"
+
+START
+        create_generator($functions, $typedefs)->($role)->($fh);
+        print "$file successfully created\n";
+    }
     else {
         die("Role $role isn't supported");
     }

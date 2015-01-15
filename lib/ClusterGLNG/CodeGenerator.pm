@@ -80,7 +80,6 @@ CAPTURE_END
             my ($output) = @_;
             for my $f (@$functions) {
                 my $function_name = "packer_" . $f->name;
-                my $params = $f->parameters;
                 $output->print(render_mt(<<'SIGNATURE_END', $f, $function_name)->as_string);
 ? my ($f, $name) = @_;
 ? my $params = $f->parameters;
@@ -106,6 +105,50 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', @declared_params) 
 SIGNATURE_END
             }
         },
+        packed_dumper => sub {
+            my %print_hint_for = (
+                GLenum     => 'u',
+                GLboolean  => 'uc',
+                GLbitfield => 'u',
+                GLbyte     => 'c',
+                GLshort    => 'd',
+                GLint      => 'd',
+                GLubyte    => 'uc',
+                GLushort   => 'uh',
+                GLuint     => 'ud',
+                GLsizei    => 'd',
+                GLfloat    => 'f',
+                GLclampf   => 'f',
+                GLdouble   => 'f',
+                GLclampd   => 'f',
+            );
+            my ($output) = @_;
+            for my $f (@$functions) {
+                my $template = Text::MicroTemplate->new(template => <<'PACKED_DUMPER_END', escape_func => undef);
+? my ($f, $print_hint_for) = @_;
+? my $params = $f->parameters;
+? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my @dumpable_params = grep { !$_->is_pointer && !$_->fixed_size } @$params;
+? my $need_reply = $f->return_type ne 'void' || @pointer_params;
+void dump_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', ($need_reply? ('int direction'): ()) ) ?>){
+        const char* prefix = <?= $need_reply ? 'direction == DIRECTION_FORWARD ? "[>>]" : "[<<]"' : '""' ?>;
+?   my $pattern = join(', ', map { $_->name.' = %'.$print_hint_for->{$_->type} } @dumpable_params);
+?   if (@$params) {
+        void* my_ptr = _i->get_packed();
+?   }
+?   for my $p (@$params) {
+?       my $p_type = $p->type(0) . ($p->fixed_size? '*' : '') . '*';
+?       my $ptr_name = '_' . $p->name . '_ptr';
+        <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) my_ptr;
+        <?= $p->type.($p->fixed_size? '*' : '') ?> <?= $p->name ?> = *<?= $ptr_name ?>++; my_ptr = <?= $ptr_name ?>;
+?   }
+        LOG("%s <?= $f->name ?>(<?= $pattern ?>)\n", <?= join(', ', qw/prefix/, map { $_->name } @dumpable_params ) ?> );
+}
+
+PACKED_DUMPER_END
+                $output->print(eval($template->code)->($f, \%print_hint_for));
+            }
+        }
     );
 
     return sub {
