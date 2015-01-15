@@ -18,6 +18,8 @@ all: $(OBJS) $(NAME)
 
 Interceptor.o: Interceptor.cpp
 
+TextProcessor.o: TextProcessor.cpp generated.h
+
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@
 

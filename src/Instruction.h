@@ -30,5 +30,6 @@ class Instruction {
 };
 
 typedef void(*CGLNG_simple_function)(Instruction* i);
+typedef void(*CGLNG_directed_function)(Instruction* i, int direction);
 
 #endif /* _INSTRUCTION_H */

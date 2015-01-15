@@ -13,11 +13,26 @@ TextProcessor::~TextProcessor() {
 
 bool TextProcessor::submit(vector<Instruction* > &queue) {
   if (queue.size() > 1 ) {
-    LOG("instuciton queue lenght: %lu\n", queue.size());
+    LOG("instuction queue lenght: %lu\n", queue.size());
   }
   for (vector<Instruction*>::iterator it = queue.begin(); it != queue.end(); it++) {
     Instruction* i = *it;
-    CGLNG_simple_function f = (CGLNG_simple_function) text_functions[i->id];
+    uint32_t id = i->id;
+    if (id > LAST_GENERATED_ID ) {
+      LOG("Unknown instruction id: %u, aborting...\n", id);
+      abort();
+    }
+    CGLNG_simple_function f = (CGLNG_simple_function) text_functions[id];
     f(i);
   }
+}
+
+bool TextProcessor::query(Instruction* i, int direction) {
+    uint32_t id = i->id;
+    if (id > LAST_GENERATED_ID ) {
+      LOG("Unknown query instruction id: %u, aborting...\n", id);
+      abort();
+    }
+    CGLNG_directed_function f = (CGLNG_directed_function) text_functions[id];
+    f(i, direction);
 }
