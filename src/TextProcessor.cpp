@@ -4,7 +4,7 @@
 
 TextProcessor::TextProcessor(){
   text_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
-  fill_text_dumpers(text_functions);
+  cglng_fill_packet_dumpers(text_functions);
 }
 
 TextProcessor::~TextProcessor() {

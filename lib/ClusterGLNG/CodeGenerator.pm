@@ -148,7 +148,21 @@ void dump_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', ($need_reply? ('int 
 PACKED_DUMPER_END
                 $output->print(eval($template->code)->($f, \%print_hint_for));
             }
-        }
+        },
+        packed_dumper_list => sub {
+            my ($output) = @_;
+            $output->print(render_mt(<<'PD_LIST_END', $functions)->as_string);
+? my ($functions) = @_;
+void cglng_fill_packet_dumpers(void *location) {
+    CGLNG_simple_function* ptr = (CGLNG_simple_function*)location;
+? for my $f (@$functions) {
+?   my @pointer_params = grep { $_->is_pointer && !$_->is_const } @{ $f->parameters };
+?   my $need_reply = $f->return_type ne 'void' || @pointer_params;
+    *ptr++ =<?= $need_reply? '(CGLNG_simple_function)(' : '' ?> &dump_<?= $f->name ?><?= $need_reply? ')' : '' ?>;
+? }
+}
+PD_LIST_END
+        },
     );
 
     return sub {

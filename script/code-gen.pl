@@ -54,6 +54,7 @@ elsif ($role && $cache_file && $output_dir) {
 #include "Instruction.h"
 
 #define LAST_GENERATED_ID $last_id
+void cglng_fill_packet_dumpers(void *location);
 START
         create_generator($functions, $typedefs)->($role)->($fh);
         print $fh <<END;
@@ -98,6 +99,7 @@ START
 
 START
         create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator($functions, $typedefs)->('packed_dumper_list')->($fh);
         print "$file successfully created\n";
     }
     else {
