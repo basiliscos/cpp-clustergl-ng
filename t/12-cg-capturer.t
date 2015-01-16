@@ -18,7 +18,7 @@ test_codegen {
             ->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid glPushMatrix(){\E/;
+        like $data, qr/\Qextern "C" void glPushMatrix(){\E/;
         like $data, qr/\QInterceptor& my_interceptor = Interceptor::get_instance();\E/;
         like $data, qr/\QInstruction *my_instruction = my_interceptor.create_instruction(1);\E/;
         like $data, qr/\Qmy_interceptor.intercept(my_instruction);\E/;
@@ -30,7 +30,7 @@ test_codegen {
             ->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid glClear(GLbitfield mask){\E/;
+        like $data, qr/\Qextern "C" void glClear(GLbitfield mask){\E/;
         like $data, qr/\Qpacker_glClear(my_instruction, mask);\E/;
         like $data, qr/\Qmy_interceptor.intercept(my_instruction);\E/;
     };

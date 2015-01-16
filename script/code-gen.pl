@@ -55,9 +55,11 @@ elsif ($role && $cache_file && $output_dir) {
 
 #define LAST_GENERATED_ID $last_id
 void cglng_fill_packet_dumpers(void *location);
+extern "C" {
 START
         create_generator($functions, $typedefs)->($role)->($fh);
         print $fh <<END;
+}
 #endif /* GENERATED_H */
 END
         print "$file successfully created\n";
