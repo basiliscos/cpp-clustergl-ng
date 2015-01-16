@@ -41,7 +41,7 @@ generated_packed_dumper.cpp: gl.h.cache generated.h
 
 $(NAME): $(OBJS) generated_packer.o generated_capturer.o generated_packed_dumper.o
 #	$(CXX) -o ../runtime/$@-render $(OBJS_APP) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
-	$(CXX) -shared -o ../runtime/lib$@-capture.so $(OBJS_SHARED) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
+	$(CXX) -shared -o ../runtime/lib$@-capture.so $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 
 clean:
 	@rm -f *.o ../runtime/$(NAME) ../runtime/lib$(NAME).so generated*

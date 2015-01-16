@@ -41,6 +41,10 @@ void Instruction::store_reply(void* reply, bool reply_owner){
 }
 
 void* Instruction::get_reply() {
+  if (!reply) {
+    LOG("Oops! Trying to get reply for instruction %d, without set it previously... going do die\n", id);
+    abort();
+  }
   return reply;
 }
 

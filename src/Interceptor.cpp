@@ -48,19 +48,19 @@ void Interceptor::intercept(Instruction* i){
 }
 
 void Interceptor::intercept_with_reply(Instruction* i){
-  vector<Processor*>::iterator it;
+  unsigned int idx = 0;
   // advance forward
-  for (it = processors.begin(); it != processors.end(); it++) {
-    if ( (*it)->query(i, DIRECTION_FORWARD) ) {
+  for (idx = 0; idx < processors.size(); idx++) {
+    if ( processors[idx]->query(i, DIRECTION_FORWARD) ) {
       break;
     }
   }
 
   // advance backward
   do {
-    it--;
-    (*it)->query(i, DIRECTION_BACKWARD);
-  } while( it != processors.begin() );
+    processors[idx]->query(i, DIRECTION_BACKWARD);
+    if (!idx) break;
+  } while( !idx-- );
 
   // remove previous reply
   if (last_instruction) delete last_instruction;
