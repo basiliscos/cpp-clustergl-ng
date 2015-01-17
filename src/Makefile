@@ -38,8 +38,11 @@ generated_capturer.cpp: gl.h.cache generated.h
 generated_packed_dumper.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_dumper -o .
 
+generated_function_names.cpp: gl.h.cache generated.h
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r function_names -o .
 
-$(NAME): $(OBJS) generated_packer.o generated_capturer.o generated_packed_dumper.o
+
+$(NAME): $(OBJS) generated_packer.o generated_capturer.o generated_packed_dumper.o generated_function_names.o
 #	$(CXX) -o ../runtime/$@-render $(OBJS_APP) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 	$(CXX) -shared -o ../runtime/lib$@-capture.so $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 

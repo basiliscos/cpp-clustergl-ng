@@ -163,6 +163,18 @@ void cglng_fill_packet_dumpers(void *location) {
 }
 PD_LIST_END
         },
+        function_names => sub {
+            my ($output) = @_;
+            my $template = Text::MicroTemplate->new(template => <<'NAMES_LIST_END', escape_func => undef);
+? my ($functions) = @_;
+? my $names = join(",\n", map { '"'.$_->name.'"' } @$functions);
+const char **cglng_function_names = (const char*[]) {
+  <?= $names ?>
+};
+
+NAMES_LIST_END
+                $output->print(eval($template->code)->($functions));
+        },
     );
 
     return sub {

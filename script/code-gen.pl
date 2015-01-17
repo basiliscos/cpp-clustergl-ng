@@ -53,8 +53,10 @@ elsif ($role && $cache_file && $output_dir) {
 
 #include "Instruction.h"
 
+
 #define LAST_GENERATED_ID $last_id
 void cglng_fill_packet_dumpers(void *location);
+extern "C" const char **cglng_function_names;
 extern "C" {
 START
         create_generator($functions, $typedefs)->($role)->($fh);
@@ -102,6 +104,17 @@ START
 START
         create_generator($functions, $typedefs)->($role)->($fh);
         create_generator($functions, $typedefs)->('packed_dumper_list')->($fh);
+        print "$file successfully created\n";
+    }
+    elsif ($role eq 'function_names') {
+        my $file = path($output_dir, 'generated_function_names.cpp');
+        print "generating $file\n";
+        my $fh = $file->filehandle('>');
+        print $fh <<START;
+#include "generated.h"
+
+START
+        create_generator($functions, $typedefs)->($role)->($fh);
         print "$file successfully created\n";
     }
     else {
