@@ -33,7 +33,6 @@ typedef void(*CGLNG_simple_function)(Instruction* i);
 typedef void(*CGLNG_directed_function)(Instruction* i, int direction);
 
 typedef void(*CGLNG_executor_function)(Instruction* i, void* executor);
-typedef void(*CGLNG_directed_executor_function)(Instruction* i, int direction, void* executor);
 
 
 #endif /* _INSTRUCTION_H */

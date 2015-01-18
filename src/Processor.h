@@ -49,8 +49,9 @@ class TextProcessor: public Processor {
 
 class ExecProcessor: public Processor {
  private:
-  void** local_functions;
   void** executor_functions;
+  void** packed_executor_functions;
+  void* _get_executor(uint32_t id);
  public:
   ExecProcessor();
   ~ExecProcessor();

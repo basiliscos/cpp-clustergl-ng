@@ -58,5 +58,7 @@ void Instruction::acquire() {
 
 void Instruction::release() {
   ref_count--;
-  LOG("Warning, negative count of references?\n");
+  if(ref_count < 0) {
+    LOG("Warning, negative count of references for instruction %d?\n", id);
+  }
 }

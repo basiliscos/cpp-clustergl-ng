@@ -29,6 +29,7 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qvoid glClear(GLbitfield mask);\E/;
         like $data, qr/\Qvoid packer_glClear(Instruction *_instruction, GLbitfield mask);\E/;
+        like $data, qr/\Qvoid exec_glClear(Instruction *_i, void* executor);\E/;
     };
 
     subtest "glIsEnabled declartion" => sub {

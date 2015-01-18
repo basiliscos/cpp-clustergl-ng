@@ -56,6 +56,7 @@ elsif ($role && $cache_file && $output_dir) {
 
 #define LAST_GENERATED_ID $last_id
 void cglng_fill_packet_dumpers(void *location);
+void cglng_fill_packed_executors(void *location);
 extern "C" const char **cglng_function_names;
 extern "C" {
 START
@@ -115,6 +116,21 @@ START
 
 START
         create_generator($functions, $typedefs)->($role)->($fh);
+        print "$file successfully created\n";
+    }
+    elsif ($role eq 'packed_executor') {
+        my $file = path($output_dir, 'generated_packed_executor.cpp');
+        print "generating $file\n";
+        my $fh = $file->filehandle('>');
+        print $fh <<PACKED_EXECUTOR_START;
+#include "generated.h"
+#include "common.h"
+#include "Instruction.h"
+#include "Processor.h"
+
+PACKED_EXECUTOR_START
+        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator($functions, $typedefs)->('packed_executor_list')->($fh);
         print "$file successfully created\n";
     }
     else {

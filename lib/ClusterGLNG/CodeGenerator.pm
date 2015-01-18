@@ -32,6 +32,7 @@ sub create_generator {
 /* <?= $f->id ?> */
 <?= $f->return_type ?> <?= $f->name ?>(<?= $orig_params ?>);
 void packer_<?= $f->name ?>(<?= $packer_params ?>);
+void exec_<?= $f->name ?>(Instruction *_i, void* executor);
 ? my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
 ? for my $p (@const_ptr_params) {
 uint32_t <?= join('_', $f->name, $p->name, 'size') ?>(<?= $orig_params ?>); /* have to be provided manually */
@@ -174,6 +175,57 @@ const char **cglng_function_names = (const char*[]) {
 
 NAMES_LIST_END
                 $output->print(eval($template->code)->($functions));
+        },
+        packed_executor => sub {
+            my ($output) = @_;
+            for my $f (@$functions) {
+                my $template = Text::MicroTemplate->new(template => <<'PACKED_EXECUTOR_END', escape_func => undef);
+? my ($f) = @_;
+? my $params = $f->parameters;
+? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my @dumpable_params = grep { !$_->is_pointer && !$_->fixed_size } @$params;
+? my $need_reply = $f->return_type ne 'void' || @pointer_params;
+void exec_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', 'void* executor') ?>){
+?   if (@$params) {
+        void* my_ptr = _i->get_packed();
+?   }
+?   for my $p (@$params) {
+?       my $p_type = $p->type(0) . ($p->fixed_size? '*' : '') . '*';
+?       my $ptr_name = '_' . $p->name . '_ptr';
+        <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) my_ptr;
+        <?= $p->type.($p->fixed_size? '*' : '') ?> <?= $p->name ?> = *<?= $ptr_name ?>++; my_ptr = <?= $ptr_name ?>;
+?   }
+?       my $param_types = join(', ', map { $_->type(0) . ($_->fixed_size? '*' : '') } @$params );
+        <?= $f->return_type ?> (*my_<?= $f->name ?>)(<?= $param_types ?>) = (<?= $f->return_type ?> (*)(<?= $param_types ?>))executor;
+?  my ($reply, $post_reply_action) = ('', '');
+?  if($need_reply && $f->return_type ne 'void' && $f->return_type !~ /\*/) {
+        <?= $f->return_type ?>* reply_ptr = (<?= $f->return_type ?>*) malloc(sizeof(<?= $f->return_type ?>));
+        _i->store_reply((void*)reply_ptr, true);
+?       $reply = '*reply_ptr = ';
+?  } elsif($need_reply && $f->return_type =~ /\*/) {
+?       $reply = $f->return_type . ' _reply = ';
+?       $post_reply_action = '_i->store_reply((void*)_reply, false)';
+?  } elsif($need_reply) {
+       /* indirect reply via one of input paramterers */
+?  }
+        <?= $reply ?>(*my_<?= $f->name ?>)(<?= join(', ', map { $_->name } @$params ) ?>);
+        <?= $post_reply_action ?>;
+}
+PACKED_EXECUTOR_END
+                $output->print(eval($template->code)->($f));
+            }
+        },
+        packed_executor_list => sub {
+            my ($output) = @_;
+            $output->print(render_mt(<<'PE_LIST_END', $functions)->as_string);
+? my ($functions) = @_;
+void cglng_fill_packed_executors(void *location) {
+    CGLNG_executor_function* ptr = (CGLNG_executor_function*)location;
+? for my $f (@$functions) {
+    *ptr++ = &exec_<?= $f->name ?>;
+? }
+}
+PE_LIST_END
         },
     );
 

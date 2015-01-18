@@ -36,6 +36,10 @@ my %typedef_for = (
             name        => 'GLdouble',
             declaration => 'typedef double GLdouble;',
         ),
+        TypeDef->new(
+            name        => 'GLubyte',
+            declaration => 'typedef unsigned char;',
+        ),
     )
 );
 
@@ -118,7 +122,7 @@ my %function_for = (
             ],
         ),
         FunctionDef->new(
-            id          => 5,
+            id          => 6,
             name        => 'glLoadTransposeMatrixd',
             return_type => 'void',
             parameters  => [
@@ -128,6 +132,14 @@ my %function_for = (
                                is_const   => 1,
                                fixed_size => 16,
                            ),
+            ],
+        ),
+        FunctionDef->new(
+            id          => 7,
+            name        => 'glGetString',
+            return_type => 'const GLubyte *',
+            parameters  => [
+                Parameter->new(name => 'name', typedef => $typedef_for{GLenum}),
             ],
         ),
     )

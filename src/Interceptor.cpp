@@ -11,6 +11,7 @@ Interceptor::Interceptor(){
   original_SDL_Init = NULL;
   initial_instruction = last_instruction = NULL;
   processors.push_back(new TextProcessor());
+  processors.push_back(new ExecProcessor());
 };
 
 int Interceptor::intercept_sdl_init(unsigned int flags) {
@@ -43,6 +44,7 @@ void Interceptor::intercept(Instruction* i){
     if((*it)->references_count() != 1) {
       LOG("Warning, ref_count != for instruction %d\n", (*it)->id);
     }
+    (*it)->release();
     delete *it;
   }
 }

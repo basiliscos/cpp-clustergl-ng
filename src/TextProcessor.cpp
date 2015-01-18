@@ -35,4 +35,5 @@ bool TextProcessor::query(Instruction* i, int direction) {
     }
     CGLNG_directed_function f = (CGLNG_directed_function) text_functions[id];
     f(i, direction);
+    return false;
 }

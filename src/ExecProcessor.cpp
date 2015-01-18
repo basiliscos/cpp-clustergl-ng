@@ -5,11 +5,26 @@
 
 ExecProcessor::ExecProcessor() {
   executor_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
+  packed_executor_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
+  cglng_fill_packed_executors(packed_executor_functions);
 }
 
 ExecProcessor::~ExecProcessor() {
   free(executor_functions);
+  free(packed_executor_functions);
 }
+
+void* ExecProcessor::_get_executor(uint32_t id) {
+  const char* name = cglng_function_names[id];
+  LOG("Looking for symbol: %s\n", name);
+  void* executor = dlsym(RTLD_NEXT, name);
+  if(!executor) {
+    LOG("Warning: cannot find local symbol: %s, aborting...\n", name);
+    abort();
+  }
+  return executor;
+}
+
 
 bool ExecProcessor::submit(vector<Instruction* > &queue) {
   for (vector<Instruction*>::iterator it = queue.begin(); it != queue.end(); it++) {
@@ -21,14 +36,26 @@ bool ExecProcessor::submit(vector<Instruction* > &queue) {
     }
     void *executor = executor_functions[id];
     if (!executor) {
-      const char* name = cglng_function_names[id];
-      LOG("Looking for symbol: %s\n", name);
-      executor = dlsym(RTLD_NEXT, name);
-      if(!executor) {
-        LOG("Warning: cannot find local symbol: %s, aborting...\n", name);
-        abort();
-      }
+      executor = _get_executor(id);
       executor_functions[id] = executor;
     }
+    CGLNG_executor_function packed_exec = (CGLNG_executor_function) packed_executor_functions[id];
+    (*packed_exec)(i, executor);
   }
+}
+
+bool ExecProcessor::query(Instruction* i, int direction) {
+    uint32_t id = i->id;
+    if (id > LAST_GENERATED_ID ) {
+      LOG("Unknown query instruction id: %u, aborting...\n", id);
+      abort();
+    }
+    void *executor = executor_functions[id];
+    if (!executor) {
+      executor = _get_executor(id);
+      executor_functions[id] = executor;
+    }
+    CGLNG_executor_function packed_exec = (CGLNG_executor_function) packed_executor_functions[id];
+    (*packed_exec)(i, executor);
+    return true; // processor-terminator
 }
