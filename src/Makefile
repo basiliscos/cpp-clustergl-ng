@@ -20,6 +20,8 @@ Interceptor.o: Interceptor.cpp
 
 TextProcessor.o: TextProcessor.cpp generated.h
 
+ExecProcessor.o: ExecProcessor.cpp generated.h
+
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@
 

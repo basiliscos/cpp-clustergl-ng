@@ -8,7 +8,7 @@ TextProcessor::TextProcessor(){
 }
 
 TextProcessor::~TextProcessor() {
-  delete text_functions;
+  free(text_functions);
 }
 
 bool TextProcessor::submit(vector<Instruction* > &queue) {

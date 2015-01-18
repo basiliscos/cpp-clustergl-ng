@@ -47,4 +47,16 @@ class TextProcessor: public Processor {
   bool query(Instruction* i, int direction);
 };
 
+class ExecProcessor: public Processor {
+ private:
+  void** local_functions;
+  void** executor_functions;
+ public:
+  ExecProcessor();
+  ~ExecProcessor();
+
+  bool submit(vector<Instruction* > &queue);
+  bool query(Instruction* i, int direction);
+};
+
 #endif /* _PROCESSOR_H */
