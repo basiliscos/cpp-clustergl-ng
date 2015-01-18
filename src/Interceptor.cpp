@@ -10,7 +10,7 @@ Interceptor& Interceptor::get_instance() {
 Interceptor::Interceptor(){
   original_SDL_Init = NULL;
   initial_instruction = last_instruction = NULL;
-  processors.push_back(new TextProcessor());
+  //processors.push_back(new TextProcessor());
   processors.push_back(new ExecProcessor());
 };
 

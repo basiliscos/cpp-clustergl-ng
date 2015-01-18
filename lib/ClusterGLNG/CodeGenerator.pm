@@ -204,9 +204,9 @@ void exec_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', 'void* executor') ?>
         <?= $f->return_type ?> (*my_<?= $f->name ?>)(<?= $param_types ?>) = (<?= $f->return_type ?> (*)(<?= $param_types ?>))executor;
 ?  my ($reply, $post_reply_action) = ('', '');
 ?  if($need_reply && $f->return_type ne 'void' && $f->return_type !~ /\*/) {
-        <?= $f->return_type ?>* reply_ptr = (<?= $f->return_type ?>*) malloc(sizeof(<?= $f->return_type ?>));
-        _i->store_reply((void*)reply_ptr, true);
-?       $reply = '*reply_ptr = ';
+        static <?= $f->return_type ?> _reply;
+        _i->store_reply((void*)&_reply, false);
+?       $reply = '_reply = ';
 ?  } elsif($need_reply && $f->return_type =~ /\*/) {
 ?       $reply = $f->return_type . ' _reply = ';
 ?       $post_reply_action = '_i->store_reply((void*)_reply, false)';

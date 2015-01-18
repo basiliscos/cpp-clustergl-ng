@@ -50,9 +50,9 @@ test_codegen {
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid exec_glIsEnabled(Instruction *_i, void* executor)\E/;
-        like $data, qr/\QGLboolean* reply_ptr = (GLboolean*) malloc(sizeof(GLboolean));\E/;
-        like $data, qr/\Q_i->store_reply((void*)reply_ptr, true);\E/;
-        like $data, qr/\Q*reply_ptr = (*my_glIsEnabled)(cap);\E/;
+        like $data, qr/\Qstatic GLboolean _reply;\E/;
+        like $data, qr/\Q_i->store_reply((void*)&_reply, false);\E/;
+        like $data, qr/\Q_reply = (*my_glIsEnabled)(cap);\E/;
     };
 
     subtest "glGetString" => sub {
