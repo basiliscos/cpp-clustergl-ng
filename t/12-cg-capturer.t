@@ -66,6 +66,15 @@ test_codegen {
         like $data, qr/\Qpacker_glLoadTransposeMatrixd(my_instruction, m);\E/;
         like $data, qr/\Qmy_interceptor.intercept(my_instruction);\E/;
     };
+
+    subtest "glReadPixels, submittion, wait for indirect result" => sub {
+        create_generator([$functiondef_for->{glReadPixels}], [])
+            ->('capturer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\Qmy_interceptor.intercept_with_reply(my_instruction)\E/;
+        unlike $data, qr/\Qget_reply();\E/;
+    };
 };
 
 done_testing;

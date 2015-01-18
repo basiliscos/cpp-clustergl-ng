@@ -65,8 +65,8 @@ extern "C" <?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', @declared_param
 ? }
 ? if ($need_reply) {
       my_interceptor.intercept_with_reply(my_instruction);
-      <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
 ?   if ($f->return_type ne 'void' && !@pointer_params) {
+      <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
       return *reply;
 ?   }
 ? } else {
