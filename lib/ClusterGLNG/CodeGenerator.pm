@@ -58,19 +58,24 @@ FUNDECL_END
 
 /* <?= $f->id ?>, has_packer: <?= $has_packer ?>, need reply: <?= $need_reply ?> */
 extern "C" <?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', @declared_params) ?>){
-      Interceptor& my_interceptor = Interceptor::get_instance();
-      Instruction *my_instruction = my_interceptor.create_instruction(<?= $f->id ?>);
+        Interceptor& my_interceptor = Interceptor::get_instance();
+        Instruction *my_instruction = my_interceptor.create_instruction(<?= $f->id ?>);
 ? if ($has_packer) {
-      <?= $packer_name ?>(<?= $packer_params ?>);
+        <?= $packer_name ?>(<?= $packer_params ?>);
 ? }
 ? if ($need_reply) {
-      my_interceptor.intercept_with_reply(my_instruction);
+        my_interceptor.intercept_with_reply(my_instruction);
 ?   if ($f->return_type ne 'void' && !@pointer_params) {
-      <?= $f->return_type ?> * reply = (<?= $f->return_type ?> *)my_instruction->get_reply();
-      return *reply;
+?     if($f->return_type !~ /\*/) {
+        <?= $f->return_type ?> * reply_ptr = (<?= $f->return_type ?> *)my_instruction->get_reply();
+        return *reply_ptr;
+?     } else {
+        <?= $f->return_type ?> reply = (<?= $f->return_type ?>)my_instruction->get_reply();
+        return reply;
+?     }
 ?   }
 ? } else {
-      my_interceptor.intercept(my_instruction);
+        my_interceptor.intercept(my_instruction);
 ? }
 }
 

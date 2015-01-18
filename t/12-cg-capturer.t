@@ -53,8 +53,8 @@ test_codegen {
         like $data, qr/\QGLboolean glIsEnabled(GLenum cap){\E/;
         like $data, qr/\Qpacker_glIsEnabled(my_instruction, cap);\E/;
         like $data, qr/\Qmy_interceptor.intercept_with_reply(my_instruction);\E/;
-        like $data, qr/\QGLboolean * reply = (GLboolean *)my_instruction->get_reply();\E/;
-        like $data, qr/\Qreturn *reply;\E/;
+        like $data, qr/\QGLboolean * reply_ptr = (GLboolean *)my_instruction->get_reply();\E/;
+        like $data, qr/\Qreturn *reply_ptr;\E/;
     };
 
     subtest "glLoadTransposeMatrixd, submittion" => sub {
@@ -74,6 +74,15 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qmy_interceptor.intercept_with_reply(my_instruction)\E/;
         unlike $data, qr/\Qget_reply();\E/;
+    };
+
+    subtest "glGetString, waitfor result, return result as is" => sub {
+        create_generator([$functiondef_for->{glGetString}], [])
+            ->('capturer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr/\Qconst GLubyte * reply = (const GLubyte *)my_instruction->get_reply();\E/;
+        like $data, qr/\Qreturn reply;\E/;
     };
 };
 
