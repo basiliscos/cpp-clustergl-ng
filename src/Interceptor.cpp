@@ -64,6 +64,7 @@ void Interceptor::intercept_with_reply(Instruction* i){
     if (!idx) break;
   } while( !idx-- );
 
+  i->release();
   // remove previous reply
   if (last_instruction) delete last_instruction;
   last_instruction = i;

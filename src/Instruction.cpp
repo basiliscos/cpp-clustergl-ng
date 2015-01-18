@@ -17,10 +17,10 @@ Instruction::~Instruction(){
     free(reply);
   }
   if(ref_count > 0) {
-    LOG("Warning, relasing non-released Instruction... going do die\n");
+    LOG("Warning, relasing non-released Instruction %d... going do die\n", id);
     abort();
   }else if(ref_count < 0){
-    LOG("Warning, relasing over-released (ref_count < 0) Instruction... going do die\n");
+    LOG("Warning, relasing over-released (ref_count < 0) Instruction %d... going do die\n", id);
     abort();
   }
 }

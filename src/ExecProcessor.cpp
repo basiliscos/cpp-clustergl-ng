@@ -16,7 +16,7 @@ ExecProcessor::~ExecProcessor() {
 
 void* ExecProcessor::_get_executor(uint32_t id) {
   const char* name = cglng_function_names[id];
-  LOG("Looking for symbol: %s\n", name);
+  // LOG("Looking for symbol: %s\n", name);
   void* executor = dlsym(RTLD_NEXT, name);
   if(!executor) {
     LOG("Warning: cannot find local symbol: %s, aborting...\n", name);
