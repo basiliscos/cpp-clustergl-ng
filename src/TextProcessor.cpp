@@ -4,6 +4,10 @@
 
 TextProcessor::TextProcessor(){
   text_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
+  if (!text_functions) {
+    LOG("Cannot allocate memory for executor functions, exiting\n");
+    abort();
+  }
   cglng_fill_packet_dumpers(text_functions);
 }
 

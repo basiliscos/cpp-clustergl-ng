@@ -5,7 +5,17 @@
 
 ExecProcessor::ExecProcessor() {
   executor_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
+  if (!executor_functions) {
+    LOG("Cannot allocate memory for executor functions, exiting\n");
+    abort();
+  }
+  memset(executor_functions, 0, sizeof(void*) * LAST_GENERATED_ID);
+
   packed_executor_functions = (void**) malloc(sizeof(void*) * LAST_GENERATED_ID);
+  if (!packed_executor_functions) {
+    LOG("Cannot allocate memory for packed executor functions, exiting\n");
+    abort();
+  }
   cglng_fill_packed_executors(packed_executor_functions);
 }
 
