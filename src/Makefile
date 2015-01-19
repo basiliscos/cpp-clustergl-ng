@@ -10,7 +10,7 @@ OBJS_SHARED := $(patsubst mod_app_dummy.o,,$(OBJS))
 OBJS_APP := $(patsubst mod_app.o,,$(OBJS)) 
 DEPS := $(wildcard include/*.h) 
 
-CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -O3 -Wextra -g -fPIC -fvisibility-inlines-hidden 
+CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden
 LDFLAGS=-lconfuse -llzo2 -lz `sdl-config --cflags --libs` -lSDL_net -lconfuse -lGLEW 
 LINUX_LDFLAGS=-lGL -lGLU
 

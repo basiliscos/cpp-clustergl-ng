@@ -1,17 +1,53 @@
 #include "Interceptor.h"
 #include "common.h"
 #include <dlfcn.h>
+#include <confuse.h>
 
 Interceptor& Interceptor::get_instance() {
   static Interceptor instance;
-  return instance;;
+  return instance;
 }
 
 Interceptor::Interceptor(){
   original_SDL_Init = NULL;
   initial_instruction = last_instruction = NULL;
-  //processors.push_back(new TextProcessor());
-  processors.push_back(new ExecProcessor());
+
+  char* config_file = getenv("CGLNG_CONFIG");
+  if (!config_file) {
+    LOG("No config file defined via CGLNG_CONFIG, exiting ...\n");
+    exit(1);
+  }
+  cfg_opt_t opts[] = {
+    CFG_STR_LIST( (char *)"capture_pipeline", (char *)"{}", CFGF_NONE),
+    CFG_END()
+  };
+  cfg_t *cfg = cfg_init(opts, 0);
+  switch(cfg_parse(cfg, config_file)) {
+  case CFG_FILE_ERROR:
+    LOG("Warning: configuration file '%s' could not be read: %s, exiting...\n",
+           config_file, strerror(errno));
+    exit(1);
+  case CFG_SUCCESS:
+    break;
+  case CFG_PARSE_ERROR:
+    LOG("Error parsing config %s, exiting...\n", config_file);
+    exit(1);
+  }
+  for(unsigned int i = 0; i < cfg_size(cfg, "capture_pipeline"); i++){
+    string module_name(cfg_getnstr(cfg, "capture_pipeline", i));
+    Processor* p = NULL;
+    if (module_name == "text") p = new TextProcessor();
+    else if (module_name == "exec") p = new ExecProcessor();
+    if (p) {
+      LOG("using %s processor\n", module_name.c_str());
+      processors.push_back(p);
+    }
+  }
+  if (processors.size() == 0) {
+    LOG("No, processors have been in configuration, exiting...\n");
+    exit(1);
+  }
+  LOG("Inteceptor has been successfuly initialized\n");
 };
 
 int Interceptor::intercept_sdl_init(unsigned int flags) {
