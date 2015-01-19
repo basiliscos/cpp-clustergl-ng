@@ -15,6 +15,8 @@ TextProcessor::~TextProcessor() {
   free(text_functions);
 }
 
+bool TextProcessor::is_terminal() { return false; }
+
 bool TextProcessor::submit(vector<Instruction* > &queue) {
   if (queue.size() > 1 ) {
     LOG("instuction queue lenght: %lu\n", queue.size());

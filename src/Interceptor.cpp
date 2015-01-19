@@ -64,6 +64,18 @@ Interceptor::Interceptor(){
     LOG("No, processors have been in configuration, exiting...\n");
     exit(1);
   }
+  uint32_t terminals = 0;
+  for(unsigned int i = 0; i < processors.size(); i++) {
+    if (processors[i]->is_terminal() ) terminals++;
+  }
+  if (terminals == 0) {
+    LOG("No, terminal processor found in configuration, exiting...\n");
+    exit(1);
+  }
+  if (terminals > 1) {
+    LOG("There should be only one terminal processor, exiting...\n");
+    exit(1);
+  }
   LOG("Inteceptor has been successfuly initialized\n");
 };
 

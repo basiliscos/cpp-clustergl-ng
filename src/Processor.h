@@ -34,6 +34,13 @@ class Processor {
 
     */
     virtual bool query(Instruction* i, int direction) = 0;
+
+    /*
+      Used to distinquish terminal processors, i.e. that ones wich finally
+      consume instructions. There must be exactly one terminal node
+      on pipe
+    */
+    virtual bool is_terminal() = 0;
 };
 
 class TextProcessor: public Processor {
@@ -45,6 +52,7 @@ class TextProcessor: public Processor {
 
   bool submit(vector<Instruction* > &queue);
   bool query(Instruction* i, int direction);
+  bool is_terminal();
 };
 
 class ExecProcessor: public Processor {
@@ -58,6 +66,7 @@ class ExecProcessor: public Processor {
 
   bool submit(vector<Instruction* > &queue);
   bool query(Instruction* i, int direction);
+  bool is_terminal();
 };
 
 #endif /* _PROCESSOR_H */

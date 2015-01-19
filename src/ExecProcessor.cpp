@@ -24,6 +24,8 @@ ExecProcessor::~ExecProcessor() {
   free(packed_executor_functions);
 }
 
+bool ExecProcessor::is_terminal() { return true; }
+
 void* ExecProcessor::_get_executor(uint32_t id) {
   const char* name = cglng_function_names[id];
   LOG("Looking for symbol: %s\n", name);
