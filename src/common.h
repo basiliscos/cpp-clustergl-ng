@@ -8,6 +8,8 @@
 #include <errno.h>
 #include <sys/uio.h>
 
+#include <confuse.h>
+
 #include <string>
 #include <iterator>
 #include <vector>

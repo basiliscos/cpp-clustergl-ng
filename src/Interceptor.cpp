@@ -1,7 +1,6 @@
 #include "Interceptor.h"
 #include "common.h"
 #include <dlfcn.h>
-#include <confuse.h>
 
 Interceptor& Interceptor::get_instance() {
   static Interceptor instance;
@@ -17,10 +16,28 @@ Interceptor::Interceptor(){
     LOG("No config file defined via CGLNG_CONFIG, exiting ...\n");
     exit(1);
   }
-  cfg_opt_t opts[] = {
-    CFG_STR_LIST( (char *)"capture_pipeline", (char *)"{}", CFGF_NONE),
+  cfg_opt_t output_opts[] = {
+    CFG_STR( (char *)("identity"), 0, CFGF_NONE),
+    CFG_INT( (char *)("size_x"), 0, CFGF_NONE),
+    CFG_INT( (char *)("size_y"), 0, CFGF_NONE),
+    CFG_INT( (char *)("position_x"), 0, CFGF_NONE),
+    CFG_INT( (char *)("position_y"), 0, CFGF_NONE),
+    CFG_INT( (char *)("offset_x"), 0, CFGF_NONE),
+    CFG_INT( (char *)("offset_x"), 0, CFGF_NONE),
     CFG_END()
   };
+  cfg_opt_t net_tier_opts[] = {
+    CFG_INT( (char *)("listen_port"), 0, CFGF_NONE),
+    CFG_SEC( (char *)"output", output_opts, CFGF_MULTI),
+    CFG_END()
+  };
+
+  cfg_opt_t opts[] = {
+    CFG_STR_LIST( (char *)"capture_pipeline", (char *)"{}", CFGF_NONE),
+    CFG_SEC( (char *)"net_tier", net_tier_opts, CFGF_NONE),
+    CFG_END()
+  };
+
   cfg_t *cfg = cfg_init(opts, 0);
   switch(cfg_parse(cfg, config_file)) {
   case CFG_FILE_ERROR:
@@ -111,4 +128,3 @@ void Interceptor::intercept_with_reply(Instruction* i){
 extern "C" int SDL_Init(unsigned int flags) {
   return Interceptor::get_instance().intercept_sdl_init(flags);
 };
-
