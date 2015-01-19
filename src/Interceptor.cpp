@@ -9,7 +9,7 @@ Interceptor& Interceptor::get_instance() {
 
 Interceptor::Interceptor(){
   original_SDL_Init = NULL;
-  initial_instruction = last_instruction = NULL;
+  last_instruction = NULL;
 
   char* config_file = getenv("CGLNG_CONFIG");
   if (!config_file) {
@@ -79,6 +79,14 @@ Interceptor::Interceptor(){
   LOG("Inteceptor has been successfuly initialized\n");
 };
 
+Interceptor::~Interceptor() {
+  if (last_instruction) delete last_instruction;
+  for (vector<Processor*>::iterator it = processors.begin(); it != processors.end(); it++) {
+    delete *it;
+  }
+  LOG("Interceptor has been succesfuly destroyed\n");
+}
+
 int Interceptor::intercept_sdl_init(unsigned int flags) {
   LOG("intercepted SDL_init\n");
   if (!original_SDL_Init){
@@ -95,8 +103,7 @@ int Interceptor::intercept_sdl_init(unsigned int flags) {
 }
 
 Instruction* Interceptor::create_instruction(uint32_t id){
-  initial_instruction = new Instruction(id);
-  return initial_instruction;
+  return new Instruction(id);
 }
 
 void Interceptor::intercept(Instruction* i){
