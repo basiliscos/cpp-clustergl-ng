@@ -69,4 +69,16 @@ class ExecProcessor: public Processor {
   bool is_terminal();
 };
 
+class NetTierProcessor: public Processor {
+ private:
+  ExecProcessor* exec;
+ public:
+  NetTierProcessor(cfg_t *global_config);
+  ~NetTierProcessor();
+
+  bool submit(vector<Instruction* > &queue);
+  bool query(Instruction* i, int direction);
+  bool is_terminal();
+};
+
 #endif /* _PROCESSOR_H */

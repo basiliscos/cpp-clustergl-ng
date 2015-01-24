@@ -7,6 +7,7 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/uio.h>
+#include <unistd.h>
 
 #include <confuse.h>
 

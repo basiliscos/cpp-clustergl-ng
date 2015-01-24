@@ -55,6 +55,7 @@ Interceptor::Interceptor(){
     Processor* p = NULL;
     if (module_name == "text") p = new TextProcessor();
     else if (module_name == "exec") p = new ExecProcessor();
+    else if (module_name == "net_tier") p = new NetTierProcessor(cfg);
     if (p) {
       LOG("using %s processor\n", module_name.c_str());
       processors.push_back(p);
