@@ -132,10 +132,11 @@ void Interceptor::intercept_with_reply(Instruction* i){
   }
 
   // advance backward
-  do {
-    processors[idx]->query(i, DIRECTION_BACKWARD);
-    if (!idx) break;
-  } while( !idx-- );
+  if (idx) {
+    do {
+      processors[--idx]->query(i, DIRECTION_BACKWARD);
+    } while( idx );
+  };
 
   i->release();
   // remove previous reply

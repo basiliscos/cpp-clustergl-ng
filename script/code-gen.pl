@@ -55,7 +55,7 @@ elsif ($role && $cache_file && $output_dir) {
 
 
 #define LAST_GENERATED_ID $last_id
-void cglng_fill_packet_dumpers(void *location);
+void cglng_fill_packed_dumpers(void *location);
 void cglng_fill_packed_executors(void *location);
 extern "C" const char **cglng_function_names;
 extern "C" {

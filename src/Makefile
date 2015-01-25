@@ -4,14 +4,14 @@ NAME=cglng
 
 #files
 SOURCES := $(wildcard *.cpp)
-OBJS := $(patsubst %.cpp, %.o, $(SOURCES)) 
+OBJS := $(patsubst %.cpp, %.o, $(SOURCES))
 
-OBJS_SHARED := $(patsubst mod_app_dummy.o,,$(OBJS)) 
-OBJS_APP := $(patsubst mod_app.o,,$(OBJS)) 
-DEPS := $(wildcard include/*.h) 
+OBJS_SHARED := $(patsubst mod_app_dummy.o,,$(OBJS))
+OBJS_APP := $(patsubst mod_app.o,,$(OBJS))
+DEPS := $(wildcard include/*.h)
 
-CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden
-LDFLAGS=-lconfuse -llzo2 -lz `sdl-config --cflags --libs` -lSDL_net -lconfuse -lGLEW 
+CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden `sdl-config --cflags`
+LDFLAGS=-lconfuse -llzo2 -lz `sdl-config --libs` -lSDL_net -lconfuse -lGLEW
 LINUX_LDFLAGS=-lGL -lGLU
 
 all: $(OBJS) $(NAME)
@@ -21,6 +21,8 @@ Interceptor.o: Interceptor.cpp
 TextProcessor.o: TextProcessor.cpp generated.h
 
 ExecProcessor.o: ExecProcessor.cpp generated.h
+
+custom_commands.o: custom_commands.cpp custom_commands.h generated.h
 
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@

@@ -18,7 +18,7 @@ test_codegen {
             ->('packed_dumper_list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid cglng_fill_packet_dumpers(void *location) {\E/;
+        like $data, qr/\Qvoid cglng_fill_packed_dumpers(void *location) {\E/;
         like $data, qr/\QCGLNG_simple_function* ptr = (CGLNG_simple_function*)location;\E/;
         like $data, qr/\Q*ptr++ = &dump_glPushMatrix;\E/;
     };
@@ -28,7 +28,7 @@ test_codegen {
             ->('packed_dumper_list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
-        like $data, qr/\Qvoid cglng_fill_packet_dumpers(void *location) {\E/;
+        like $data, qr/\Qvoid cglng_fill_packed_dumpers(void *location) {\E/;
         like $data, qr/\QCGLNG_simple_function* ptr = (CGLNG_simple_function*)location;\E/;
         like $data, qr/\Q*ptr++ =(CGLNG_simple_function)( &dump_glIsEnabled);\E/;
     };

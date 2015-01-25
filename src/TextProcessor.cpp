@@ -8,7 +8,7 @@ TextProcessor::TextProcessor(){
     LOG("Cannot allocate memory for executor functions, exiting\n");
     abort();
   }
-  cglng_fill_packet_dumpers(text_functions);
+  cglng_fill_packed_dumpers(text_functions);
 }
 
 TextProcessor::~TextProcessor() {

@@ -159,7 +159,7 @@ PACKED_DUMPER_END
             my ($output) = @_;
             $output->print(render_mt(<<'PD_LIST_END', $functions)->as_string);
 ? my ($functions) = @_;
-void cglng_fill_packet_dumpers(void *location) {
+void cglng_fill_packed_dumpers(void *location) {
     CGLNG_simple_function* ptr = (CGLNG_simple_function*)location;
 ? for my $f (@$functions) {
 ?   my @pointer_params = grep { $_->is_pointer && !$_->is_const } @{ $f->parameters };
