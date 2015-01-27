@@ -14,7 +14,7 @@
 #include <string>
 #include <iterator>
 #include <vector>
-  
+
 using std::vector;
 using std::string;
 

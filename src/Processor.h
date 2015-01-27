@@ -43,6 +43,7 @@ class Processor {
     virtual bool is_terminal() = 0;
 };
 
+/* just dumps packed commands */
 class TextProcessor: public Processor {
  private:
   void** text_functions;
@@ -55,6 +56,7 @@ class TextProcessor: public Processor {
   bool is_terminal();
 };
 
+/* executes packed commands */
 class ExecProcessor: public Processor {
  private:
   void** executor_functions;
@@ -69,12 +71,30 @@ class ExecProcessor: public Processor {
   bool is_terminal();
 };
 
+/*
+   "multiplies" instructions between local
+   executor and NetOutputProcessors
+*/
 class NetTierProcessor: public Processor {
  private:
   ExecProcessor* exec;
  public:
   NetTierProcessor(cfg_t *global_config);
   ~NetTierProcessor();
+
+  bool submit(vector<Instruction* > &queue);
+  bool query(Instruction* i, int direction);
+  bool is_terminal();
+};
+
+class NetOutputProcessor: public Processor {
+ private:
+  int _output;
+  void _send_instruction(Instruction* i); /* serialized */
+  void _receive_reply(Instruction* i);
+ public:
+  NetOutputProcessor(cfg_t *global_config, cfg_t *my_config, int socket);
+  ~NetOutputProcessor();
 
   bool submit(vector<Instruction* > &queue);
   bool query(Instruction* i, int direction);

@@ -6,23 +6,35 @@
 
 class Instruction {
  private:
-  
-  void* packed_args;
-  uint32_t pack_size;
-  int ref_count;
-  void* reply;
-  bool reply_owner;
-  
+
+  int _ref_count;
+  void* _packed_args;
+  uint32_t _pack_size;
+  void* _reply;
+  bool _reply_owner;
+  void* _serialized;
+  uint32_t _serialized_size;
+  void* _serialized_reply;
+  uint32_t _serialized_reply_size;
+
  public:
   const uint32_t id;
   Instruction(uint32_t instruction_id);
   ~Instruction();
-  
+
   void* pack_allocate(uint32_t size);
   void* get_packed();
 
   void store_reply(void* reply, bool reply_owner);
   void* get_reply();
+
+  void* serialize_allocate(uint32_t size);
+  void* get_serialized();
+  uint32_t serialized_size();
+
+  void* serialized_reply_allocate(uint32_t size);
+  void* get_serialized_reply();
+  uint32_t serialized_reply_size();
 
   int references_count();
   void acquire();

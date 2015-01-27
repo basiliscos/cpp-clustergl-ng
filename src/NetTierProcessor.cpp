@@ -1,4 +1,5 @@
 #include "Processor.h"
+#include "Exception.h"
 
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -56,8 +57,14 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
           cfg_t *output_cfg = cfg_getnsec(my_config, "output", i);
           char* output_identity = cfg_getstr(output_cfg, "identity");
           if ( strncmp(buff, output_identity, identity_length) == 0 ) {
-            LOG("Connected %s node\n", output_identity);
-            actual_nodes++;
+            try {
+              NetOutputProcessor* nop = new NetOutputProcessor(global_config, output_cfg, client_fd);
+              LOG("Connected %s node\n", output_identity);
+              actual_nodes++;
+            } catch (Exception& e) {
+              LOG("Negotiation error: %s\n", e.what());
+              close(client_fd);
+            }
           }
         }
       }

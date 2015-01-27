@@ -24,6 +24,8 @@ ExecProcessor.o: ExecProcessor.cpp generated.h
 
 custom_commands.o: custom_commands.cpp custom_commands.h generated.h
 
+NetOutputProcessor.o: NetOutputProcessor.cpp generated.h
+
 gl.h.xml: /usr/include/GL/gl.h
 	cscan --xml $^ > $@
 
