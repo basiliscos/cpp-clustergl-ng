@@ -1,20 +1,17 @@
 UNAME := $(shell uname -s)
 
-NAME=cglng
-
-#files
+OBJS_GENERATED := generated_packer.o generated_capturer.o generated_packed_dumper.o generated_function_names.o generated_packed_executor.o
 SOURCES := $(wildcard *.cpp)
-OBJS := $(patsubst %.cpp, %.o, $(SOURCES))
+OBJS_HANDMADE := $(filter-out $(OBJS_GENERATED), $(patsubst %.cpp, %.o, $(SOURCES)) ) 
+OBJS := $(OBJS_HANDMADE) $(OBJS_GENERATED)
 
-OBJS_SHARED := $(patsubst mod_app_dummy.o,,$(OBJS))
-OBJS_APP := $(patsubst mod_app.o,,$(OBJS))
-DEPS := $(wildcard include/*.h)
+OBJS_SHARED := $(filter-out Node.o, $(OBJS))
 
-CXXFLAGS=$(ARCH) -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden `sdl-config --cflags`
-LDFLAGS=-lconfuse -llzo2 -lz `sdl-config --libs` -lSDL_net -lconfuse -lGLEW
+CXXFLAGS=$(ARCH) -frtti -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden `sdl-config --cflags`
+LDFLAGS=-lconfuse -ldl -llzo2 -lz `sdl-config --libs` -lSDL_net -lconfuse -lGLEW
 LINUX_LDFLAGS=-lGL -lGLU
 
-all: $(OBJS) $(NAME)
+all: ../runtime/libcglng-capture.so ../runtime/node
 
 Interceptor.o: Interceptor.cpp
 
@@ -50,10 +47,11 @@ generated_function_names.cpp: gl.h.cache generated.h
 generated_packed_executor.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_executor -o .
 
+../runtime/libcglng-capture.so: $(OBJS_SHARED)
+	$(CXX) -shared -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 
-$(NAME): $(OBJS) generated_packer.o generated_capturer.o generated_packed_dumper.o generated_function_names.o generated_packed_executor.o
-#	$(CXX) -o ../runtime/$@-render $(OBJS_APP) $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
-	$(CXX) -shared -o ../runtime/lib$@-capture.so $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
+../runtime/node: $(OBJS)
+	$(CXX) -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)
 
 clean:
-	@rm -f *.o ../runtime/$(NAME) ../runtime/lib$(NAME).so generated*
+	@rm -f $(OBJS) ../runtime/libcglng-capture.so ../runtime/node generated*

@@ -71,12 +71,16 @@ class ExecProcessor: public Processor {
   bool is_terminal();
 };
 
+class NetOutputProcessor;
+
 /*
    "multiplies" instructions between local
    executor and NetOutputProcessors
 */
 class NetTierProcessor: public Processor {
  private:
+  vector<Processor*> all_processors;
+  vector<NetOutputProcessor*> output_processors;
   ExecProcessor* exec;
  public:
   NetTierProcessor(cfg_t *global_config);

@@ -83,3 +83,13 @@ void NetOutputProcessor::_receive_reply(Instruction* i) {
     buff_ptr += got;
   } while (to_read);
 }
+
+bool NetOutputProcessor::submit(vector<Instruction* > &queue) {
+  abort();
+}
+
+bool NetOutputProcessor::query(Instruction* i, int direction) {
+  abort();
+}
+
+bool NetOutputProcessor::is_terminal() { return true; }

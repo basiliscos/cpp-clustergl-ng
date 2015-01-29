@@ -9,7 +9,7 @@ class Exception: public std::exception {
   const std::string _reason;
  public:
   Exception(const char* reason);
-  virtual ~Exception() throw();
+  ~Exception() throw();
   const char* what();
 };
 

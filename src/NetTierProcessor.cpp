@@ -1,7 +1,7 @@
 #include "Processor.h"
 #include "Exception.h"
 
-#include <sys/types.h> 
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -36,7 +36,7 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
      1. read identity length
      2. read indentity (up-to 100 symbols)
      3. if identity presents among outputs - accept it
-   */ 
+   */
   do {
     char buff[100];
     struct sockaddr_in cli_addr;
@@ -61,6 +61,7 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
               NetOutputProcessor* nop = new NetOutputProcessor(global_config, output_cfg, client_fd);
               LOG("Connected %s node\n", output_identity);
               actual_nodes++;
+              output_processors.push_back(nop);
             } catch (Exception& e) {
               LOG("Negotiation error: %s\n", e.what());
               close(client_fd);
@@ -70,15 +71,28 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
       }
     }
   } while(actual_nodes < output_count);
+
+  close(sockfd); /* we do not need server socket any longer */
+
+  exec = new ExecProcessor();
+  for(uint32_t i = 0; i < output_processors.size(); i++) {
+    all_processors.push_back(output_processors[i]);
+  }
+  all_processors.push_back(exec);
 }
 
 NetTierProcessor::~NetTierProcessor() {
+  for(uint32_t i = 0; i < all_processors.size(); i++) {
+    delete all_processors[i];
+  }
 }
 
 bool NetTierProcessor::is_terminal(){ return true; }
 
 bool NetTierProcessor::submit(vector<Instruction* > &queue) {
-  abort();
+  for(uint32_t i = 0; i < all_processors.size(); i++) {
+    all_processors[i]->submit(queue);
+  }
 }
 
 bool NetTierProcessor::query(Instruction* i, int direction) {
