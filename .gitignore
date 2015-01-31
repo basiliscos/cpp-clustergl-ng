@@ -3,3 +3,4 @@
 runtime/node
 src/capture.*
 src/generated*
+.prove
