@@ -2,4 +2,4 @@
 *.so
 src/capture.*
 src/generated*
-
+.prove
