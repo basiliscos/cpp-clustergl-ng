@@ -54,7 +54,13 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
           char* output_identity = cfg_getstr(output_cfg, "identity");
           if ( strncmp(buff, output_identity, identity_length) == 0 ) {
             try {
-              LOG("doing handshake\n");
+              LOG("confirming connect, doing handshake\n");
+              buff[0] = 1;
+              int write_bytes = write(client_fd, buff, 1);
+              if ( write_bytes < 0 ) {
+                LOG("Error sending confirmation\n");
+                continue;
+              }
               NetOutputProcessor* nop = new NetOutputProcessor(global_config, output_cfg, client_fd);
               LOG("Connected %s node\n", output_identity);
               actual_nodes++;

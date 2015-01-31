@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+#define INSTRUCTION_NEED_REPLY 1
 
 class Instruction {
  private:
@@ -19,7 +20,8 @@ class Instruction {
 
  public:
   const uint32_t id;
-  Instruction(uint32_t instruction_id);
+  const unsigned char flags;
+  Instruction(uint32_t instruction_id, unsigned char my_flags = 0);
   ~Instruction();
 
   void* pack_allocate(uint32_t size);

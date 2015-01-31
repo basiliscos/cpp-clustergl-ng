@@ -1,7 +1,8 @@
 #include "Instruction.h"
 
 
-Instruction::Instruction(uint32_t instruction_id):id(instruction_id){
+Instruction::Instruction(uint32_t instruction_id, unsigned char my_flags):
+  id(instruction_id), flags(my_flags) {
   _ref_count = 1;
   _packed_args = NULL;
   _pack_size = 0;
