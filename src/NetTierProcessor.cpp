@@ -1,11 +1,6 @@
 #include "Processor.h"
 #include "Exception.h"
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-
 NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
   cfg_t *my_config = cfg_getsec(global_config, "net_tier");
   int listen_port = cfg_getint(my_config, "listen_port");
@@ -53,11 +48,13 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
     if ( read_bytes == sizeof(uint32_t) && identity_length > 0 && identity_length < 100 ) {
       read_bytes = read(client_fd, buff, identity_length);
       if ( read_bytes > 0 &&  ((uint32_t) read_bytes) == identity_length ) {
+        LOG("node identify themself as %s\n", buff);
         for (int i = 0; i < output_count; i++) {
           cfg_t *output_cfg = cfg_getnsec(my_config, "output", i);
           char* output_identity = cfg_getstr(output_cfg, "identity");
           if ( strncmp(buff, output_identity, identity_length) == 0 ) {
             try {
+              LOG("doing handshake\n");
               NetOutputProcessor* nop = new NetOutputProcessor(global_config, output_cfg, client_fd);
               LOG("Connected %s node\n", output_identity);
               actual_nodes++;

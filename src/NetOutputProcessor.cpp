@@ -3,10 +3,6 @@
 #include "custom_commands.h"
 #include "Exception.h"
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/uio.h>
-#include <netinet/in.h>
 #include "SDL.h"
 
 NetOutputProcessor::NetOutputProcessor(cfg_t *global_config, cfg_t *my_config, int socket) {

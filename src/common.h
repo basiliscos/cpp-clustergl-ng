@@ -9,6 +9,11 @@
 #include <sys/uio.h>
 #include <unistd.h>
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #include <confuse.h>
 
 #include <string>
