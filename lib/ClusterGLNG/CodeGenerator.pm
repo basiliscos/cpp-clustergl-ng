@@ -59,7 +59,7 @@ FUNDECL_END
 /* <?= $f->id ?>, has_packer: <?= $has_packer ?>, need reply: <?= $need_reply ?> */
 extern "C" <?= $f->return_type ?> <?= $f->name ?>(<?= join(', ', @declared_params) ?>){
         Interceptor& my_interceptor = Interceptor::get_instance();
-        Instruction *my_instruction = my_interceptor.create_instruction(<?= $f->id ?>);
+        Instruction *my_instruction = my_interceptor.create_instruction(<?= $f->id ?>, <?= $need_reply ? 'INSTRUCTION_NEED_REPLY' : 0 ?>);
 ? if ($has_packer) {
         <?= $packer_name ?>(<?= $packer_params ?>);
 ? }

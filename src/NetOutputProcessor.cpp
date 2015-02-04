@@ -9,7 +9,7 @@ NetOutputProcessor::NetOutputProcessor(cfg_t *global_config, cfg_t *my_config, i
   _output = socket;
 
   /* step 1: get (sdl) video info from remote side */
-  Instruction* i = new Instruction(CGLNG_SDL_GETVIDEOINFO_ID);
+  Instruction* i = new Instruction(CGLNG_SDL_GETVIDEOINFO_ID, INSTRUCTION_CUSTOM | INSTRUCTION_NEED_REPLY);
   dump_cglng_SDL_GetVideoInfo(i, DIRECTION_FORWARD);
   serializer_cglng_SDL_GetVideoInfo(i, DIRECTION_FORWARD);
   _send_instruction(i);

@@ -15,7 +15,7 @@ class Interceptor
  public:
   static Interceptor& get_instance();
   int intercept_sdl_init(unsigned int flags);
-  Instruction* create_instruction(uint32_t id);
+  Instruction* create_instruction(uint32_t id, unsigned char flags);
   void intercept(Instruction *i);
   void intercept_with_reply(Instruction *i);
 };

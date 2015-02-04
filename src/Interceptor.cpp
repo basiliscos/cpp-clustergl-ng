@@ -103,8 +103,8 @@ int Interceptor::intercept_sdl_init(unsigned int flags) {
   }
 }
 
-Instruction* Interceptor::create_instruction(uint32_t id){
-  return new Instruction(id);
+Instruction* Interceptor::create_instruction(uint32_t id, unsigned char flags){
+  return new Instruction(id, flags);
 }
 
 void Interceptor::intercept(Instruction* i){

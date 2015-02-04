@@ -4,6 +4,7 @@
 #include "common.h"
 
 #define INSTRUCTION_NEED_REPLY 1
+#define INSTRUCTION_CUSTOM 2
 
 class Instruction {
  private:

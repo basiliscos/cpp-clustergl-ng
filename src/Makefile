@@ -8,7 +8,7 @@ OBJS := $(OBJS_HANDMADE) $(OBJS_GENERATED)
 OBJS_SHARED := $(filter-out Node.o, $(OBJS))
 
 CXXFLAGS=$(ARCH) -frtti -I/opt/local/include/ -Iinclude -Wextra -g -fPIC -fvisibility-inlines-hidden `sdl-config --cflags`
-LDFLAGS=-lconfuse -ldl -llzo2 -lz `sdl-config --libs` -lSDL_net -lconfuse -lGLEW
+LDFLAGS=-lconfuse -ldl -llzo2 -lz `sdl-config --libs` -lconfuse -lGLEW
 LINUX_LDFLAGS=-lGL -lGLU
 
 all: ../runtime/libcglng-capture.so ../runtime/node

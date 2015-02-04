@@ -20,7 +20,7 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qextern "C" void glPushMatrix(){\E/;
         like $data, qr/\QInterceptor& my_interceptor = Interceptor::get_instance();\E/;
-        like $data, qr/\QInstruction *my_instruction = my_interceptor.create_instruction(1);\E/;
+        like $data, qr/\QInstruction *my_instruction = my_interceptor.create_instruction(1, 0);\E/;
         like $data, qr/\Qmy_interceptor.intercept(my_instruction);\E/;
         unlike $data, qr/\Qpacker_glPushMatrix\E/;
     };
@@ -51,6 +51,7 @@ test_codegen {
         ok $data;
         print "data: $data\n";
         like $data, qr/\QGLboolean glIsEnabled(GLenum cap){\E/;
+        like $data, qr/\QInstruction *my_instruction = my_interceptor.create_instruction(2, INSTRUCTION_NEED_REPLY)\E/;
         like $data, qr/\Qpacker_glIsEnabled(my_instruction, cap);\E/;
         like $data, qr/\Qmy_interceptor.intercept_with_reply(my_instruction);\E/;
         like $data, qr/\QGLboolean * reply_ptr = (GLboolean *)my_instruction->get_reply();\E/;

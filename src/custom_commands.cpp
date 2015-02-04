@@ -10,6 +10,7 @@ void dump_cglng_SDL_GetVideoInfo(Instruction* i, int direction) {
 }
 
 void exec_cglng_SDL_GetVideoInfo(Instruction *_i, void* executor){
+  LOG("exec_cglng_SDL_GetVideoInfo()\n");
   SDL_VideoInfo* (*my_SDL_GetVideoInfo)(void) = (SDL_VideoInfo* (*)(void))executor;
   SDL_VideoInfo* _reply = (*my_SDL_GetVideoInfo)();
   _i->store_reply((void*)_reply, false);

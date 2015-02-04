@@ -94,9 +94,11 @@ Node::~Node(){
 }
 
 Instruction* Node::_receive() {
+  LOG("going to receive instruction from socket\n");
   char buff[sizeof(uint32_t)*2+1];
   uint32_t to_read = sizeof(uint32_t)*2+1;
   char* ptr = buff;
+  LOG("going to read %d bytes\n", to_read);
   do {
     int got_bytes = read(socket_fd, ptr, to_read);
     if (got_bytes < 0) {
@@ -105,10 +107,11 @@ Instruction* Node::_receive() {
     }
     ptr += got_bytes;
     to_read -= got_bytes;
-  } while (!to_read);
+  } while (to_read);
   uint32_t*  uint32_t_ptr = (uint32_t*) buff;
   //TODO: check that instuciton_id belongs to our range
   uint32_t instruction_id = *uint32_t_ptr++;
+  LOG("received instruction %d\n", instruction_id);
   ptr = (char*) uint32_t_ptr;
   unsigned char flags = *ptr++;
   uint32_t_ptr = (uint32_t*) ptr;
@@ -117,7 +120,8 @@ Instruction* Node::_receive() {
   Instruction *i = new Instruction(instruction_id, flags);
   ptr = (char*) i->serialize_allocate(args_size);
   to_read = args_size;
-  do {
+  LOG("going to read %d bytes (instuction arguments)\n", to_read);
+  while(to_read) {
     int got_bytes = read(socket_fd, ptr, to_read);
     if (got_bytes < 0) {
       perror("read() error");
@@ -125,19 +129,40 @@ Instruction* Node::_receive() {
     }
     ptr += got_bytes;
     to_read -= got_bytes;
-  } while (!to_read);
+  }
   return i;
 }
 
 void Node::execution_loop() {
   while(true) {
+    Instruction* i = _receive();
+    LOG("processing instruction %d\n", i->id);
+    vector<Instruction*> queue;
+    queue.push_back(i);
+    if(i->flags & INSTRUCTION_NEED_REPLY) {
+      unsigned int idx = 0;
+      // advance forward
+      for (idx = 0; idx < all_processors.size(); idx++) {
+        if ( all_processors[idx]->query(i, DIRECTION_FORWARD) ) {
+          break;
+        }
+      }
 
+      // advance backward
+      if (idx) {
+        do {
+          all_processors[--idx]->query(i, DIRECTION_BACKWARD);
+        } while( idx );
+      };
+
+      i->release();
+    }
   }
 }
 
 int main(int argc, char** argv) {
-  Node node(argc, argv);
+  Node* node = new Node(argc, argv);
   LOG("Starting main execution loop\n");
-  node.execution_loop();
+  node->execution_loop();
   return 0;
 }
