@@ -30,7 +30,7 @@ void exec_cglng_SDL_GetVideoInfo(Instruction *_i, void* executor){
 }
 
 void serializer_cglng_SDL_GetVideoInfo(Instruction *i, int direction) {
-  if (direction = DIRECTION_FORWARD ) {
+  if (direction == DIRECTION_FORWARD ) {
     const uint32_t size = sizeof(uint32_t) * 2 + 1;
     uint32_t *ptr = (uint32_t*) i->serialize_allocate(size);
     *ptr++ = i->id;

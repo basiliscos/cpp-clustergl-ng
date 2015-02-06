@@ -10,6 +10,7 @@ class Node {
   void _print_help_and_exit(char** argv);
   vector<Processor*> all_processors;
   Instruction* _receive();
+  void _send_reply(Instruction*);
  public:
   Node(int argc, char** argv);
   ~Node();

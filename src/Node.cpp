@@ -135,6 +135,20 @@ Instruction* Node::_receive() {
   return i;
 }
 
+void Node::_send_reply(Instruction* i) {
+  uint32_t to_write = i->serialized_reply_size();
+  char *ptr = (char*) i->get_serialized_reply();
+  do {
+    ssize_t written = write(socket_fd, ptr, to_write);
+    if ( written == -1 ) {
+      perror("Error writing socket:");
+      throw Exception("socket write error");
+    }
+    to_write -= written;
+    ptr += written;
+  } while ( to_write );
+}
+
 void Node::execution_loop() {
   while(true) {
     Instruction* i = _receive();
@@ -157,6 +171,7 @@ void Node::execution_loop() {
         } while( idx );
       };
 
+      _send_reply(i);
       i->release();
     }
   }
