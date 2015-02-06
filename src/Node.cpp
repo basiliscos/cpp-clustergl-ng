@@ -82,6 +82,7 @@ Node::Node(int argc, char** argv) {
   }
 
   LOG("OK, remote side confirmed connection\n");
+  all_processors.push_back(new TextProcessor());
   all_processors.push_back(new ExecProcessor());
 }
 
