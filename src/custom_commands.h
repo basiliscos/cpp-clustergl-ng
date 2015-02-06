@@ -20,6 +20,6 @@ void exec_cglng_SDL_GetVideoInfo(Instruction *_i, void* executor);
 
 void cglng_custom_fill_packed_dumpers(void *text_functions);
 void cglng_custom_fill_packed_executors(void *packed_executor_functions);
-
+void cglng_custom_fill_deserializers(void *functions);
 
 #endif /* _CUSTOM_COMMANDS_H */

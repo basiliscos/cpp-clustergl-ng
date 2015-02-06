@@ -105,4 +105,17 @@ class NetOutputProcessor: public Processor {
   bool is_terminal();
 };
 
+/* deserialize instuction into packed form */
+class Deserializer: public Processor {
+ private:
+  void** deserialize_functions;
+ public:
+  Deserializer();
+  ~Deserializer();
+
+  bool submit(vector<Instruction* > &queue);
+  bool query(Instruction* i, int direction);
+  bool is_terminal();
+};
+
 #endif /* _PROCESSOR_H */
