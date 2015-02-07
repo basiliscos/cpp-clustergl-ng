@@ -112,9 +112,9 @@ void deserializer_cglng_MakeWindow(Instruction* i, int direction) {
   if (direction == DIRECTION_FORWARD ) {
     i->store_packed(i->get_serialized(), false);
   } else {
-    uint32_t* ptr = (uint32_t*) i->serialized_reply_allocate(sizeof(uint32_t) + sizeof(SDL_VideoInfo));
-    *ptr++ = sizeof(SDL_VideoInfo);
-    memcpy(ptr, i->get_reply(), sizeof(SDL_VideoInfo));
+    uint32_t* ptr = (uint32_t*) i->serialized_reply_allocate(sizeof(uint32_t) + sizeof(unsigned char));
+    *ptr++ = sizeof(unsigned char);
+    memcpy(ptr, i->get_reply(), sizeof(unsigned char));
   }
 }
 
