@@ -19,8 +19,8 @@ NetOutputProcessor::NetOutputProcessor(cfg_t *global_config, cfg_t *my_config, i
   _receive_reply(i);
   serializer_cglng_MakeWindow(i, DIRECTION_BACKWARD);
   dump_cglng_MakeWindow(i, DIRECTION_BACKWARD);
-  SDL_VideoInfo* info = (SDL_VideoInfo*) i->get_reply();
-
+  unsigned char result = *((unsigned char*) i->get_reply());
+  LOG("Remote side intitialization result: %d\n", (int)result);
 }
 
 NetOutputProcessor::~NetOutputProcessor(){
