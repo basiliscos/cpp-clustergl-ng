@@ -89,19 +89,13 @@ void exec_cglng_MakeWindow(Instruction *_i, void* executor){
   unsigned char *reply = (unsigned char*) malloc(1);
   *reply = result;
   LOG("MakeWindow result: %d\n", (int)result);
-  _i->store_reply( reply, true);
+  _i->store_reply(reply, true);
 }
 
 void serializer_cglng_MakeWindow(Instruction *i, int direction) {
   if (direction == DIRECTION_FORWARD ) {
-    const uint32_t size = sizeof(uint32_t) * 2 + 1 + sizeof(int32_t)*4;
-    uint32_t *ptr = (uint32_t*) i->serialize_allocate(size);
-    *ptr++ = i->id;
-    unsigned char *flags_ptr = (unsigned char*) ptr;
-    *flags_ptr++ = INSTRUCTION_NEED_REPLY;
-    ptr = (uint32_t*)flags_ptr;
-    *ptr++ = sizeof(int32_t)*4;
-    memcpy(ptr, i->get_packed(), sizeof(int32_t)*4);
+    const uint32_t size = sizeof(int32_t)*4;
+    memcpy(i->serialize_allocate(size), i->get_packed(), size);
   } else {
     i->store_reply(i->get_serialized_reply(), false);
   }
@@ -112,8 +106,7 @@ void deserializer_cglng_MakeWindow(Instruction* i, int direction) {
   if (direction == DIRECTION_FORWARD ) {
     i->store_packed(i->get_serialized(), false);
   } else {
-    uint32_t* ptr = (uint32_t*) i->serialized_reply_allocate(sizeof(uint32_t) + sizeof(unsigned char));
-    *ptr++ = sizeof(unsigned char);
+    void *ptr = i->serialized_reply_allocate(sizeof(unsigned char));
     memcpy(ptr, i->get_reply(), sizeof(unsigned char));
   }
 }

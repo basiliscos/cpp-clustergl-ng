@@ -114,10 +114,8 @@ Instruction* Node::_receive() {
   //TODO: check that instuciton_id belongs to our range
   uint32_t instruction_id = *uint32_t_ptr++;
   LOG("received instruction %d\n", instruction_id);
-  ptr = (char*) uint32_t_ptr;
-  unsigned char flags = *ptr++;
-  uint32_t_ptr = (uint32_t*) ptr;
   uint32_t args_size = *uint32_t_ptr++;
+  unsigned char flags = *((unsigned char*) uint32_t_ptr);
 
   Instruction *i = new Instruction(instruction_id, flags);
   ptr = (char*) i->serialize_allocate(args_size);
@@ -136,8 +134,10 @@ Instruction* Node::_receive() {
 }
 
 void Node::_send_reply(Instruction* i) {
-  uint32_t to_write = i->serialized_reply_size();
-  char *ptr = (char*) i->get_serialized_reply();
+  /* write reply size */
+  uint32_t reply_size = i->serialized_reply_size();
+  uint32_t to_write = sizeof(uint32_t);
+  char *ptr = (char*) &reply_size;
   do {
     ssize_t written = write(socket_fd, ptr, to_write);
     if ( written == -1 ) {
@@ -147,6 +147,20 @@ void Node::_send_reply(Instruction* i) {
     to_write -= written;
     ptr += written;
   } while ( to_write );
+
+  /* write reply */
+  to_write = reply_size;
+  ptr = (char*) i->get_serialized_reply();
+  do {
+    ssize_t written = write(socket_fd, ptr, to_write);
+    if ( written == -1 ) {
+      perror("Error writing socket:");
+      throw Exception("socket write error");
+    }
+    to_write -= written;
+    ptr += written;
+  } while ( to_write );
+
 }
 
 void Node::execution_loop() {
