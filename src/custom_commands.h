@@ -10,13 +10,14 @@
 
 extern "C" const char **cglng_custom_function_names;
 
-#define CGLNG_SDL_GETVIDEOINFO_ID (LAST_GENERATED_ID+1)
-void dump_cglng_SDL_GetVideoInfo(Instruction* i, int direction);
-void serializer_cglng_SDL_GetVideoInfo(Instruction* i, int direction);
-void deserializer_cglng_SDL_GetVideoInfo(Instruction* i, int direction);
-void exec_cglng_SDL_GetVideoInfo(Instruction *_i, void* executor);
+#define CGLNG_MAKE_WINDOW_ID (LAST_GENERATED_ID+1)
+Instruction* packed_cglng_MakeWindow(int32_t x, int32_t y, int32_t width, int32_t height);
+void dump_cglng_MakeWindow(Instruction* i, int direction);
+void serializer_cglng_MakeWindow(Instruction* i, int direction);
+void deserializer_cglng_MakeWindow(Instruction* i, int direction);
+void exec_cglng_MakeWindow(Instruction *_i, void* executor);
 
-#define LAST_CUSTOM_ID CGLNG_SDL_GETVIDEOINFO_ID
+#define LAST_CUSTOM_ID CGLNG_MAKE_WINDOW_ID
 
 void cglng_custom_fill_packed_dumpers(void *text_functions);
 void cglng_custom_fill_packed_executors(void *packed_executor_functions);

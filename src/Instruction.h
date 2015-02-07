@@ -10,8 +10,11 @@ class Instruction {
  private:
 
   int _ref_count;
+
   void* _packed_args;
   uint32_t _pack_size;
+  bool _packed_owner;
+
   void* _reply;
   bool _reply_owner;
   void* _serialized;
@@ -26,6 +29,7 @@ class Instruction {
   ~Instruction();
 
   void* pack_allocate(uint32_t size);
+  void store_packed(void* ptr, bool packed_owner);
   void* get_packed();
 
   void store_reply(void* reply, bool reply_owner);

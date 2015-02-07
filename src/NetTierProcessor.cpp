@@ -15,6 +15,11 @@ NetTierProcessor::NetTierProcessor(cfg_t *global_config) {
   serv_addr.sin_family = AF_INET;
   serv_addr.sin_addr.s_addr = INADDR_ANY;
   serv_addr.sin_port = htons(listen_port);
+
+  int one = 1;
+  setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, &one, sizeof(one));
+  setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
+
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0){
     perror("socket bind error: ");
     exit(1);

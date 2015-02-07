@@ -8,30 +8,20 @@
 NetOutputProcessor::NetOutputProcessor(cfg_t *global_config, cfg_t *my_config, int socket) {
   _output = socket;
 
-  /* step 1: get (sdl) video info from remote side */
-  Instruction* i = new Instruction(CGLNG_SDL_GETVIDEOINFO_ID, INSTRUCTION_CUSTOM | INSTRUCTION_NEED_REPLY);
-  dump_cglng_SDL_GetVideoInfo(i, DIRECTION_FORWARD);
-  serializer_cglng_SDL_GetVideoInfo(i, DIRECTION_FORWARD);
+  int32_t x = cfg_getint(my_config, "position_x");
+  int32_t y = cfg_getint(my_config, "position_y");
+  int32_t width = cfg_getint(my_config, "size_x");
+  int32_t height = cfg_getint(my_config, "size_y");
+  Instruction* i = packed_cglng_MakeWindow(x, y, width, height);
+  dump_cglng_MakeWindow(i, DIRECTION_FORWARD);
+  serializer_cglng_MakeWindow(i, DIRECTION_FORWARD);
   _send_instruction(i);
   _receive_reply(i);
-  serializer_cglng_SDL_GetVideoInfo(i, DIRECTION_BACKWARD);
-  dump_cglng_SDL_GetVideoInfo(i, DIRECTION_BACKWARD);
+  serializer_cglng_MakeWindow(i, DIRECTION_BACKWARD);
+  dump_cglng_MakeWindow(i, DIRECTION_BACKWARD);
   SDL_VideoInfo* info = (SDL_VideoInfo*) i->get_reply();
 
-  /* step 2: analyze remote video info and prepare make window command */
-  int video_flags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-  if (info->hw_available) {
-    video_flags |= SDL_HWSURFACE;
-  } else {
-    video_flags |= SDL_SWSURFACE;
-  }
-
-  if (info->blit_hw) {
-    video_flags |= SDL_HWACCEL;
-  }
-
-  /* step 3: instruct remote side for creating window, wait for reply */
-};
+}
 
 NetOutputProcessor::~NetOutputProcessor(){
 

@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <netinet/tcp.h>
 #include <arpa/inet.h>
 
 #include <confuse.h>
@@ -19,6 +20,7 @@
 #include <string>
 #include <iterator>
 #include <vector>
+#include <sstream>
 
 using std::vector;
 using std::string;

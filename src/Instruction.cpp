@@ -6,6 +6,7 @@ Instruction::Instruction(uint32_t instruction_id, unsigned char my_flags):
   _ref_count = 1;
   _packed_args = NULL;
   _pack_size = 0;
+  _packed_owner = false;
   _reply = NULL;
   _reply_owner = false;
   _serialized = NULL;
@@ -15,7 +16,7 @@ Instruction::Instruction(uint32_t instruction_id, unsigned char my_flags):
 }
 
 Instruction::~Instruction(){
-  if(_packed_args && _pack_size) {
+  if(_packed_args && (_pack_size || _packed_owner)) {
     free(_packed_args);
   }
   if(_reply && _reply_owner){
@@ -55,7 +56,13 @@ void Instruction::release() {
 void* Instruction::pack_allocate(uint32_t size){
   _packed_args = malloc(size);
   _pack_size = size;
+  _packed_owner = true;
   return _packed_args;
+}
+
+void Instruction::store_packed(void * ptr, bool packed_owner) {
+  _packed_args = ptr;
+  _packed_owner = packed_owner;
 }
 
 void* Instruction::get_packed() {
