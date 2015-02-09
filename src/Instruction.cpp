@@ -69,6 +69,10 @@ void* Instruction::get_packed() {
   return _packed_args;
 }
 
+uint32_t Instruction::packed_size() {
+  return _pack_size;
+}
+
 void Instruction::store_reply(void* reply, bool reply_owner){
   _reply = reply;
   _reply_owner = reply_owner;

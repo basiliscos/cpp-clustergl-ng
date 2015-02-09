@@ -31,6 +31,7 @@ class Instruction {
   void* pack_allocate(uint32_t size);
   void store_packed(void* ptr, bool packed_owner);
   void* get_packed();
+  uint32_t packed_size();
 
   void store_reply(void* reply, bool reply_owner);
   void* get_reply();

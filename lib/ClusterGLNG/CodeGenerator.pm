@@ -232,6 +232,96 @@ void cglng_fill_packed_executors(void *location) {
 }
 PE_LIST_END
         },
+        serializer => sub {
+            my ($output) = @_;
+            for my $f (@$functions) {
+                $output->print(render_mt(<<'SERIALIZER_END', $f)->as_string);
+? my ($f) = @_;
+? my $name = 'serializer_' . $f->name;
+? my $params = $f->parameters;
+? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
+? my $orig_params = join(', ', map { $_->name } @$params);
+? my @pointer_params = grep { $_->is_pointer && $_->is_const } @$params;
+? my @pointer_return_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my @fixed_params = grep { $_->fixed_size } @$params;
+? my $need_reply = $f->return_type ne 'void' || @pointer_return_params;
+
+/* <?= $f->id ?> */
+void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', 'int direction') ?>){
+? if (@pointer_params || @pointer_return_params || @fixed_params) {
+            char* my_ptr = (char*)_instruction->get_packed();
+?    for my $p (@$params) {
+?       my $p_type = $p->type(0) . ($p->fixed_size? '*' : '') . '*';
+?       my $ptr_name = '_' . $p->name . '_ptr';
+            <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) my_ptr;
+            <?= $p->type.($p->fixed_size? '*' : '') ?> <?= $p->name ?> = *<?= $ptr_name ?>++; my_ptr = <?= $ptr_name ?>;
+?    }
+? }
+? if (! @$params) {
+        /* no arguments, no need to serialize */
+? } elsif (!@pointer_params && !@fixed_params) {
+     if (direction == DIRECTION_FORWARD ) {
+          /* all arguments are simple, take copy from packed */
+         const uint32_t size = _instruction->packed_size();
+         /* overhead copy (should be ignored on deserialization) : <?= join(', ', map { $_->name } @pointer_return_params) ?> */
+         memcpy(_instruction->serialize_allocate(size), _instruction->get_packed(), size);
+     }
+? } else {
+     if (direction == DIRECTION_FORWARD ) {
+?      my @ptr_sizes = grep { $_->is_pointer && $_->is_const } @$params;
+?      for my $p (@ptr_sizes) {
+            uint32_t size_for_<?= $p->name ?> = size_ <?= $p->name . "_for_@{[ $f->name ]}(${orig_params})" ?>;
+?      }
+?      my @sizes =  map { !(($_->is_pointer && $_->is_const) || $_->fixed_size)
+?                         ? 'sizeof(' . $_->name . ')'
+?                         : $_->fixed_size
+?                         ? '( ' . $_->fixed_size . ' * sizeof(' . $_->type(0) . '))'
+?                         : "(sizeof(uint32_t) + size_for_" . $_->name . ')';
+?                   } @$params;
+            uint32_t _total_size = <?= join("+", @sizes);  ?>;
+            char* _serialized_ptr = (char*) _instruction->serialize_allocate(_total_size);
+?      for my $p (@$params) {
+?         my $p_type = $p->type(0) . ($p->fixed_size? '*' : '') . '*';
+?         my $ptr_name = '_serialized_' . $p->name . '_ptr';
+?         my $size_var = "size_for_".  $p->name;
+?         if ( !($p->is_pointer && $p->is_const) && !$p->fixed_size ) {
+            <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) _serialized_ptr;
+            *<?= $ptr_name ?>++ = <?= $p->name ?>; _serialized_ptr = (char*) <?= $ptr_name ?>;
+?         } elsif ( $p->fixed_size ) {
+            uint32_t <?= $size_var ?> = ( <?= $p->fixed_size ?> * sizeof( <?= $p->type(0) ?> ));
+            memcpy(_serialized_ptr, <?= $p->name ?>, <?= $size_var ?> );
+            _serialized_ptr += <?= $size_var ?>;
+?         } elsif ( $p->is_pointer && $p->is_const) {
+            uint32_t* <?= $ptr_name ?> = (uint32_t*) _serialized_ptr;
+            *<?= $ptr_name ?>++ = <?=  $size_var ?>; _serialized_ptr = (char*) <?= $ptr_name ?>;
+            memcpy(_serialized_ptr, <?= $p->name ?>, <?= $size_var ?>); _serialized_ptr += <?= $size_var ?>;
+?         }
+?      }
+     }
+? }
+
+? if (!$need_reply) {
+            /* no reply, no serialized result deserialization */
+? } elsif ($f->return_type !~ /\*/) {
+     if (direction == DIRECTION_BACKWARD ) {
+?       if ($f->return_type ne 'void') {
+            /* reply is simple, copy serialized */
+          _instruction->store_reply(_instruction->get_serialized_reply(), false);
+?       } else {
+            char* reply_ptr = (char*) _instruction->get_serialized_reply();
+?         for my $p (@pointer_return_params) {
+?           my $size_var = "size_for_".  $p->name;
+            <?= $size_var ?>_ptr = (uint32_t*) = (uint32_t*) reply_ptr;
+            <?= $size_var ?> = *<?= $size_var ?>_ptr++; reply_ptr = (char*) <?= $size_var ?>_ptr;
+            memcpy(<?= $p->name ?>, reply_ptr, <?= $size_var ?>);
+?         }
+?       }
+     }
+? }
+}
+SERIALIZER_END
+            }
+        }
     );
 
     return sub {
