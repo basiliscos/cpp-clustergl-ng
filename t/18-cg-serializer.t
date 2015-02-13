@@ -54,7 +54,7 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glTexImage2D(Instruction *_instruction, int direction){\E/;
         like $data, qr{\Q/* no reply, no serialized result deserialization */\E};
-        like $data, qr{\Quint32_t size_for_pixels = size_pixels_for_glTexImage2D(target, level, internalFormat, width, height, border, format, pixels);\E};
+        like $data, qr{\Quint32_t size_for_pixels = glTexImage2D_pixels_size(target, level, internalFormat, width, height, border, format, pixels);\E};
         like $data, qr{\Quint32_t _total_size = sizeof(target)+sizeof(level)+sizeof(internalFormat)+sizeof(width)+sizeof(height)+sizeof(border)+sizeof(format)+(sizeof(uint32_t) + size_for_pixels);\E};
         like $data, qr{\Qmemcpy(_serialized_ptr, pixels, size_for_pixels); _serialized_ptr += size_for_pixels;\E};
     };
@@ -67,7 +67,8 @@ test_codegen {
         like $data, qr{\Q/* overhead copy (should be ignored on deserialization) : data */\E};
         like $data, qr{\Qmemcpy(_instruction->serialize_allocate(size), _instruction->get_packed(), size);\E};
         like $data, qr{\Qchar* reply_ptr = (char*) _instruction->get_serialized_reply();\E};
-        like $data, qr{\Qsize_for_data = *size_for_data_ptr++; reply_ptr = (char*) size_for_data_ptr;\E};
+        like $data, qr{\Quint32_t* size_for_data_ptr = (uint32_t*) reply_ptr;\E};
+        like $data, qr{\Quint32_t size_for_data = *size_for_data_ptr++; reply_ptr = (char*) size_for_data_ptr;\E};
         like $data, qr{\Qmemcpy(data, reply_ptr, size_for_data);\E};
     };
 

@@ -270,7 +270,7 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', 'int direction') ?
      if (direction == DIRECTION_FORWARD ) {
 ?      my @ptr_sizes = grep { $_->is_pointer && $_->is_const } @$params;
 ?      for my $p (@ptr_sizes) {
-            uint32_t size_for_<?= $p->name ?> = size_<?= $p->name ?>_for_<?= $f->name ?>(<?= $orig_params ?>);
+            uint32_t size_for_<?= $p->name ?> = <?= $f->name ?>_<?= $p->name ?>_size(<?= $orig_params ?>);
 ?      }
 ?      my @sizes =  map { !(($_->is_pointer && $_->is_const) || $_->fixed_size)
 ?                         ? 'sizeof(' . $_->name . ')'
@@ -311,8 +311,8 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', 'int direction') ?
             char* reply_ptr = (char*) _instruction->get_serialized_reply();
 ?         for my $p (@pointer_return_params) {
 ?           my $size_var = "size_for_".  $p->name;
-            <?= $size_var ?>_ptr = (uint32_t*) reply_ptr;
-            <?= $size_var ?> = *<?= $size_var ?>_ptr++; reply_ptr = (char*) <?= $size_var ?>_ptr;
+            uint32_t* <?= $size_var ?>_ptr = (uint32_t*) reply_ptr;
+            uint32_t <?= $size_var ?> = *<?= $size_var ?>_ptr++; reply_ptr = (char*) <?= $size_var ?>_ptr;
             memcpy(<?= $p->name ?>, reply_ptr, <?= $size_var ?>);
 ?         }
 ?       }
