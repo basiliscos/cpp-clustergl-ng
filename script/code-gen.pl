@@ -133,6 +133,20 @@ PACKED_EXECUTOR_START
         create_generator($functions, $typedefs)->('packed_executor_list')->($fh);
         print "$file successfully created\n";
     }
+    elsif ($role eq 'serializer') {
+        my $file = path($output_dir, 'generated_serializer.cpp');
+        print "generating $file\n";
+        my $fh = $file->filehandle('>');
+        print $fh <<SERIALIZER_START;
+#include "generated.h"
+#include "common.h"
+#include "Instruction.h"
+#include "Processor.h"
+
+SERIALIZER_START
+        create_generator($functions, $typedefs)->($role)->($fh);
+        print "$file successfully created\n";
+    }
     else {
         die("Role $role isn't supported");
     }

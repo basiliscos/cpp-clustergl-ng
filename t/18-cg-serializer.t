@@ -54,7 +54,7 @@ test_codegen {
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glTexImage2D(Instruction *_instruction, int direction){\E/;
         like $data, qr{\Q/* no reply, no serialized result deserialization */\E};
-        like $data, qr{\Quint32_t size_for_pixels = size_ pixels_for_glTexImage2D(target, level, internalFormat, width, height, border, format, pixels);\E};
+        like $data, qr{\Quint32_t size_for_pixels = size_pixels_for_glTexImage2D(target, level, internalFormat, width, height, border, format, pixels);\E};
         like $data, qr{\Quint32_t _total_size = sizeof(target)+sizeof(level)+sizeof(internalFormat)+sizeof(width)+sizeof(height)+sizeof(border)+sizeof(format)+(sizeof(uint32_t) + size_for_pixels);\E};
         like $data, qr{\Qmemcpy(_serialized_ptr, pixels, size_for_pixels); _serialized_ptr += size_for_pixels;\E};
     };

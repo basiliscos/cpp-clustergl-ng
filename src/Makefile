@@ -1,6 +1,6 @@
 UNAME := $(shell uname -s)
 
-OBJS_GENERATED := generated_packer.o generated_capturer.o generated_packed_dumper.o generated_function_names.o generated_packed_executor.o
+OBJS_GENERATED := generated_packer.o generated_capturer.o generated_packed_dumper.o generated_function_names.o generated_packed_executor.o generated_serializer.o
 SOURCES := $(wildcard *.cpp)
 OBJS_HANDMADE := $(filter-out $(OBJS_GENERATED), $(patsubst %.cpp, %.o, $(SOURCES)) ) 
 OBJS := $(OBJS_HANDMADE) $(OBJS_GENERATED)
@@ -46,6 +46,9 @@ generated_packed_dumper.cpp: gl.h.cache generated.h
 
 generated_function_names.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r function_names -o .
+
+generated_serializer.cpp: gl.h.cache generated.h
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r serializer -o .
 
 generated_packed_executor.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_executor -o .
