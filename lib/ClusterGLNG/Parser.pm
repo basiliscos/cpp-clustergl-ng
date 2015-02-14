@@ -79,8 +79,8 @@ sub parse {
                 "descendant::typeSpecifier1[\@text='$typedef_id']/../descendant::typeQualifier[\@text='const']",
                 $param_node);
 
-            my ($pointer) = $xpc->findnodes(
-                "descendant::parameterDeclarationCheckDeclarator[descendant::IDENTIFIER[\@text='$param_name']]/descendant::pointer",
+            my ($pointer) = $xpc->findvalue(
+                "descendant::parameterDeclarationCheckDeclarator[descendant::IDENTIFIER[\@text='$param_name']]/declarator/pointer/\@text",
                 $param_node,
             );
 
@@ -93,7 +93,7 @@ sub parse {
             my $parameter = ClusterGLNG::Parameter->new({
                 name       => $param_name,
                 typedef    => $typedef,
-                is_pointer => defined($pointer),
+                pointer    => $pointer,
                 is_const   => defined($const),
                 fixed_size => $fixed_size,
             });

@@ -10,7 +10,7 @@ use ClusterGLNG::Parser qw/parse/;
 my $xml = path(qw/t data sample.xml/)->slurp;
 my ($functions, $typedefs) = parse($xml, qr/^gl/);
 
-is scalar(@$functions), 4, "has correct number of functions";
+is scalar(@$functions), 5, "has correct number of functions";
 is scalar(@$typedefs), 5, "has correct number of typedefs";
 
 subtest "GLint typedef" => sub {
@@ -35,8 +35,8 @@ subtest "glTexImage2D function definition" => sub {
     is scalar(@$params), 9, "has 9 parameters";
     my @simplified_params = map {
         {
-            name => $_->name,
-            is_pointer => $_->is_pointer,
+            name       => $_->name,
+            pointer    => $_->pointer // '',
             is_const   => $_->is_const,
             typedef    => $_->typedef->name,
         }
@@ -44,55 +44,55 @@ subtest "glTexImage2D function definition" => sub {
     is_deeply \@simplified_params, [
         {
             name       => 'target',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLenum',
         },
         {
             name       => 'level',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLint',
         },
         {
             name       => 'internalFormat',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLint',
         },
         {
             name       => 'width',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLsizei',
         },
         {
             name       => 'height',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLsizei',
         },
         {
             name       => 'border',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLint',
         },
         {
             name       => 'format',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLenum',
         },
         {
             name       => 'type',
-            is_pointer => '',
+            pointer    => '',
             is_const   => '',
             typedef    => 'GLenum',
         },
         {
             name       => 'pixels',
-            is_pointer => 1,
+            pointer    => '*',
             is_const   => 1,
             typedef    => 'GLvoid',
         },
@@ -135,6 +135,22 @@ subtest "glLoadTransposeMatrixd function definition" => sub {
     is $p->name, 'm';
     ok $p->is_const;
     is $p->fixed_size, 16;
+};
+
+subtest "glGetPointerv function definition" => sub {
+    my ($f) = grep { $_->name eq 'glGetPointerv' } @$functions;
+    ok $f;
+    is $f->id, 4;
+    is $f->name, 'glGetPointerv', "name is correct";
+    is $f->return_type, 'void', "return type is correct";
+
+    my $params = $f->parameters;
+    is scalar(@$params), 2, "has 2 parameters";
+    my $p = $params->[0];
+    is $p->name, 'pname';
+    my $p2 = $params->[1];
+    is $p2->name, 'params';
+    is $p2->pointer, '**';
 };
 
 done_testing;

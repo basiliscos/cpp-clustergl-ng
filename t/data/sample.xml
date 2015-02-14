@@ -13,13 +13,14 @@
     <fdecl id="glPopAttrib" text="void glPopAttrib( void )" file="/usr/include/GL/gl.h"/>
     <fdecl id="glGetString" text="const GLubyte * glGetString( GLenum name )" file="/usr/include/GL/gl.h"/>
     <fdecl id="glLoadTransposeMatrixd" text="void glLoadTransposeMatrixd( const GLdouble m[16] )" file="/usr/include/GL/gl.h"/>
+    <fdecl id="glGetPointerv" text="void glGetPointerv( GLenum pname, GLvoid **params )" file="/usr/include/GL/gl.h"/>
   </fdecls>
   <ast>
     <translationUnit isLexeme="false" file="/usr/include/GL/gl.h" start="183" length="288980" text="...">
-	  
+
 
 	 <!-- UnusedType -->
-	 
+
 	<externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void UnusedType;">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void UnusedType;">
           <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void UnusedType;">
@@ -56,10 +57,10 @@
             <SEMICOLON start="297" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>	  
+      </externalDeclaration>
 
 	 <!-- GLvoid -->
-	 
+
 	<externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void GLvoid;">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void GLvoid;">
           <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="278" length="20" text="typedef void GLvoid;">
@@ -96,8 +97,8 @@
             <SEMICOLON start="297" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>	  
-	 
+      </externalDeclaration>
+
 	<!-- GLsizei -->
 <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="462" length="20" text="typedef int GLsizei;">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="462" length="20" text="typedef int GLsizei;">
@@ -135,7 +136,7 @@
             <SEMICOLON start="481" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>	
+      </externalDeclaration>
 
     <!-- GLint -->
 <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="350" length="18" text="typedef int GLint;">
@@ -174,7 +175,7 @@
             <SEMICOLON start="367" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>    
+      </externalDeclaration>
 
 	<!-- GLenum -->
 	<externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="183" length="28" text="typedef unsigned int GLenum;">
@@ -218,8 +219,8 @@
             <SEMICOLON start="210" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>    
-      
+      </externalDeclaration>
+
     <!-- GLboolean -->
       <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="212" length="32" text="typedef unsigned char GLboolean;">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="212" length="32" text="typedef unsigned char GLboolean;">
@@ -265,7 +266,7 @@
       </externalDeclaration>
 
      <!-- GLdouble -->
-     
+
      <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="530" length="24" text="typedef double GLdouble;">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="530" length="24" text="typedef double GLdouble;">
           <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="530" length="24" text="typedef double GLdouble;">
@@ -303,9 +304,9 @@
           </declarationCheck>
         </declaration>
       </externalDeclaration>
-      
+
 	<!-- glTexImage2D -->
-	  
+
       <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="28725" length="309" text="void glTexImage2D( GLenum target, GLint level,&#10;                                    GLint internalFormat,&#10;                                    GLsizei width, GLsizei height,&#10;                                    GLint border, GLenum format, GLenum type,&#10;                                    const GLvoid *pixels );">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="28725" length="309" text="void glTexImage2D( GLenum target, GLint level,&#10;                                    GLint internalFormat,&#10;                                    GLsizei width, GLsizei height,&#10;                                    GLint border, GLenum format, GLenum type,&#10;                                    const GLvoid *pixels );">
           <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="28725" length="309" text="void glTexImage2D( GLenum target, GLint level,&#10;                                    GLint internalFormat,&#10;                                    GLsizei width, GLsizei height,&#10;                                    GLint border, GLenum format, GLenum type,&#10;                                    const GLvoid *pixels );">
@@ -560,7 +561,7 @@
           </declarationCheck>
         </declaration>
       </externalDeclaration>
-      
+
       <!-- glPopAttrib -->
       <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="3542" length="25" text="void glPopAttrib( void );">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="3542" length="25" text="void glPopAttrib( void );">
@@ -609,7 +610,7 @@
           </declarationCheck>
         </declaration>
       </externalDeclaration>
-      
+
       <!-- SomeFunction -->
       <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="3542" length="25" text="void SomeFunction( void );">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="3542" length="25" text="void SomeFunction( void );">
@@ -730,10 +731,10 @@
           </declarationCheck>
         </declaration>
       </externalDeclaration>
-      
+
 <!--
       glLoadTransposeMatrixd
--->	
+-->
 	  <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="47655" length="52" text="void glLoadTransposeMatrixd( const GLdouble m[16] );">
         <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="47655" length="52" text="void glLoadTransposeMatrixd( const GLdouble m[16] );">
           <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="47655" length="52" text="void glLoadTransposeMatrixd( const GLdouble m[16] );">
@@ -838,8 +839,104 @@
             <SEMICOLON start="47706" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
           </declarationCheck>
         </declaration>
-      </externalDeclaration>		
-      
+      </externalDeclaration>
+
+      <!--
+          glGetPointerv
+      -->
+      <externalDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="52" text="void glGetPointerv( GLenum pname, GLvoid **params );">
+        <declaration isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="52" text="void glGetPointerv( GLenum pname, GLvoid **params );">
+          <declarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="52" text="void glGetPointerv( GLenum pname, GLvoid **params );">
+            <declarationCheckdeclarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="4" text="void">
+              <declarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="4" text="void">
+                <declarationSpecifiers1 isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="4" text="void">
+                  <typeSpecifier1 isLexeme="false" file="/usr/include/GL/gl.h" start="20599" length="4" text="void">
+                    <VOID start="20599" length="4" text="void" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                  </typeSpecifier1>
+                </declarationSpecifiers1>
+              </declarationSpecifiers>
+            </declarationCheckdeclarationSpecifiers>
+            <declarationCheckinitDeclaratorList isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="46" text="glGetPointerv( GLenum pname, GLvoid **params )">
+              <initDeclaratorList isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="46" text="glGetPointerv( GLenum pname, GLvoid **params )">
+                <initDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="46" text="glGetPointerv( GLenum pname, GLvoid **params )">
+                  <declarator isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="46" text="glGetPointerv( GLenum pname, GLvoid **params )">
+                    <msvsAttributeAny isLexeme="false" file=""/>
+                    <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="46" text="glGetPointerv( GLenum pname, GLvoid **params )">
+                      <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="13" text="glGetPointerv">
+                        <directDeclaratorIdentifier isLexeme="false" file="/usr/include/GL/gl.h" start="20604" length="13" text="glGetPointerv">
+                          <IDENTIFIER start="20604" length="13" text="glGetPointerv" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                        </directDeclaratorIdentifier>
+                      </directDeclarator>
+                      <LPAREN_SCOPE start="20617" length="1" text="(" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                      <parameterTypeList isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="29" text="GLenum pname, GLvoid **params">
+                        <parameterList isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="29" text="GLenum pname, GLvoid **params">
+                          <parameterDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="12" text="GLenum pname">
+                            <parameterDeclarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="12" text="GLenum pname">
+                              <parameterDeclarationdeclarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="6" text="GLenum">
+                                <declarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="6" text="GLenum">
+                                  <declarationSpecifiers1 isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="6" text="GLenum">
+                                    <typeSpecifier1 isLexeme="false" file="/usr/include/GL/gl.h" start="20619" length="6" text="GLenum">
+                                      <TYPEDEF_NAME start="20619" length="6" text="GLenum" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </typeSpecifier1>
+                                  </declarationSpecifiers1>
+                                </declarationSpecifiers>
+                              </parameterDeclarationdeclarationSpecifiers>
+                              <parameterDeclarationCheckDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20626" length="5" text="pname">
+                                <declarator isLexeme="false" file="/usr/include/GL/gl.h" start="20626" length="5" text="pname">
+                                  <msvsAttributeAny isLexeme="false" file=""/>
+                                  <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20626" length="5" text="pname">
+                                    <directDeclaratorIdentifier isLexeme="false" file="/usr/include/GL/gl.h" start="20626" length="5" text="pname">
+                                      <IDENTIFIER start="20626" length="5" text="pname" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </directDeclaratorIdentifier>
+                                  </directDeclarator>
+                                </declarator>
+                              </parameterDeclarationCheckDeclarator>
+                            </parameterDeclarationCheck>
+                          </parameterDeclaration>
+                          <parameterDeclaration isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="15" text="GLvoid **params">
+                            <parameterDeclarationCheck isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="15" text="GLvoid **params">
+                              <parameterDeclarationdeclarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="6" text="GLvoid">
+                                <declarationSpecifiers isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="6" text="GLvoid">
+                                  <declarationSpecifiers1 isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="6" text="GLvoid">
+                                    <typeSpecifier1 isLexeme="false" file="/usr/include/GL/gl.h" start="20633" length="6" text="GLvoid">
+                                      <TYPEDEF_NAME start="20633" length="6" text="GLvoid" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </typeSpecifier1>
+                                  </declarationSpecifiers1>
+                                </declarationSpecifiers>
+                              </parameterDeclarationdeclarationSpecifiers>
+                              <parameterDeclarationCheckDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20640" length="8" text="**params">
+                                <declarator isLexeme="false" file="/usr/include/GL/gl.h" start="20640" length="8" text="**params">
+                                  <pointer isLexeme="false" file="/usr/include/GL/gl.h" start="20640" length="2" text="**">
+                                    <msvsAttributeAny isLexeme="false" file=""/>
+                                    <STAR start="20640" length="1" text="*" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    <pointer isLexeme="false" file="/usr/include/GL/gl.h" start="20641" length="1" text="*">
+                                      <msvsAttributeAny isLexeme="false" file=""/>
+                                      <STAR start="20641" length="1" text="*" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </pointer>
+                                  </pointer>
+                                  <msvsAttributeAny isLexeme="false" file=""/>
+                                  <directDeclarator isLexeme="false" file="/usr/include/GL/gl.h" start="20642" length="6" text="params">
+                                    <directDeclaratorIdentifier isLexeme="false" file="/usr/include/GL/gl.h" start="20642" length="6" text="params">
+                                      <IDENTIFIER start="20642" length="6" text="params" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                                    </directDeclaratorIdentifier>
+                                  </directDeclarator>
+                                </declarator>
+                              </parameterDeclarationCheckDeclarator>
+                            </parameterDeclarationCheck>
+                          </parameterDeclaration>
+                        </parameterList>
+                      </parameterTypeList>
+                      <RPAREN_SCOPE start="20649" length="1" text=")" isLexeme="true" file="/usr/include/GL/gl.h"/>
+                    </directDeclarator>
+                  </declarator>
+                </initDeclarator>
+              </initDeclaratorList>
+            </declarationCheckinitDeclaratorList>
+            <SEMICOLON start="20650" length="1" text=";" isLexeme="true" file="/usr/include/GL/gl.h"/>
+          </declarationCheck>
+        </declaration>
+      </externalDeclaration>
+
     </translationUnit>
   </ast>
 </cscan>

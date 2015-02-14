@@ -85,6 +85,16 @@ test_codegen {
         like $data, qr/\Qconst GLubyte * reply = (const GLubyte *)my_instruction->get_reply();\E/;
         like $data, qr/\Qreturn reply;\E/;
     };
+
+    subtest "glGetPointerv" => sub {
+        create_generator([$functiondef_for->{glGetPointerv}], [])
+            ->('capturer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr|\Qextern "C" void glGetPointerv(GLenum pname, GLvoid ** params){\E|;
+        like $data, qr|\QInstruction *my_instruction = my_interceptor.create_instruction(8, INSTRUCTION_NEED_REPLY);\E|;
+        like $data, qr|\Qmy_interceptor.intercept_with_reply(my_instruction);\E|;
+    };
 };
 
 done_testing;

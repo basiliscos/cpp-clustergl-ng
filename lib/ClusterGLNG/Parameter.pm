@@ -5,7 +5,7 @@ use Moo;
 
 has name => (is => 'ro', required => 1);
 
-has is_pointer => (is => 'ro', default => sub { 0 } );
+has pointer => (is => 'ro', default => sub { 0 } );
 
 has is_const => (is => 'ro', default => sub { 0 });
 
@@ -20,7 +20,7 @@ sub type {
     my $type =
         ($use_const && $self->is_const ? 'const ' : '')
         . $self->typedef->name
-        . ($self->is_pointer? ' *' : '');
+        . ($self->pointer? ' ' . $self->pointer : '');
     return $type;
 }
 

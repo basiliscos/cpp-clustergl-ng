@@ -85,7 +85,7 @@ my %function_for = (
                 Parameter->new(name => 'height', typedef => $typedef_for{GLsizei} ),
                 Parameter->new(name => 'border', typedef => $typedef_for{GLint} ),
                 Parameter->new(name => 'format', typedef => $typedef_for{GLenum}),
-                Parameter->new(name => 'pixels', typedef => $typedef_for{GLvoid}, is_pointer => 1, is_const => 1),
+                Parameter->new(name => 'pixels', typedef => $typedef_for{GLvoid}, pointer => '*', is_const => 1),
             ],
         ),
         FunctionDef->new(
@@ -99,7 +99,7 @@ my %function_for = (
                 Parameter->new(name => 'height', typedef => $typedef_for{GLsizei} ),
                 Parameter->new(name => 'format', typedef => $typedef_for{GLenum}),
                 Parameter->new(name => 'type', typedef => $typedef_for{GLenum}),
-                Parameter->new(name => 'data', typedef => $typedef_for{GLvoid}, is_pointer => 1),
+                Parameter->new(name => 'data', typedef => $typedef_for{GLvoid}, pointer => '*'),
             ],
         ),
         FunctionDef->new(
@@ -110,7 +110,7 @@ my %function_for = (
                 Parameter->new(name => 'size', typedef => $typedef_for{GLint} ),
                 Parameter->new(name => 'type', typedef => $typedef_for{GLenum} ),
                 Parameter->new(name => 'stride', typedef => $typedef_for{GLsizei} ),
-                Parameter->new(name => 'ptr', typedef => $typedef_for{GLvoid}, is_pointer => 1, is_const => 1),
+                Parameter->new(name => 'ptr', typedef => $typedef_for{GLvoid}, pointer => '*', is_const => 1),
             ],
         ),
         FunctionDef->new(
@@ -118,7 +118,7 @@ my %function_for = (
             name        => 'glVertex2iv',
             return_type => 'void',
             parameters  => [
-                Parameter->new(name => 'v', typedef => $typedef_for{GLint}, is_pointer => 1, is_const => 1 ),
+                Parameter->new(name => 'v', typedef => $typedef_for{GLint}, pointer => '*', is_const => 1 ),
             ],
         ),
         FunctionDef->new(
@@ -128,7 +128,6 @@ my %function_for = (
             parameters  => [
                 Parameter->new(name       => 'm',
                                typedef    => $typedef_for{GLdouble},
-                               is_pointer => 0,
                                is_const   => 1,
                                fixed_size => 16,
                            ),
@@ -140,6 +139,15 @@ my %function_for = (
             return_type => 'const GLubyte *',
             parameters  => [
                 Parameter->new(name => 'name', typedef => $typedef_for{GLenum}),
+            ],
+        ),
+        FunctionDef->new(
+            id          => 8,
+            name        => 'glGetPointerv',
+            return_type => 'void',
+            parameters  => [
+                Parameter->new(name => 'pname', typedef => $typedef_for{GLenum}),
+                Parameter->new(name => 'params', typedef => $typedef_for{GLvoid}, pointer => '**'),
             ],
         ),
     )

@@ -59,6 +59,15 @@ test_codegen {
         like $data, qr/\Qvoid glLoadTransposeMatrixd(const GLdouble m[16]);\E/;
         like $data, qr/\Qvoid packer_glLoadTransposeMatrixd(Instruction *_instruction, const GLdouble m[16]);\E/;
     };
+
+    subtest "glGetPointerv declaration" => sub {
+        create_generator([$functiondef_for->{glGetPointerv}], [])
+            ->('declaration')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr{\Qvoid glGetPointerv(GLenum pname, GLvoid ** params);\E};
+        like $data, qr{\Qvoid packer_glGetPointerv(Instruction *_instruction, GLenum pname, GLvoid ** params);\E};
+    };
 };
 
 done_testing;

@@ -82,6 +82,16 @@ test_codegen {
         like $data, qr/\Qconst uint32_t _size = sizeof(GLdouble**);\E/;
         like $data, qr/\Qconst GLdouble** _m_ptr = (const GLdouble**) _ptr; *_m_ptr++ = m; _ptr = (void*)(_m_ptr);\E/;
     };
+
+    subtest "glGetPointerv, ** pointer" => sub {
+        create_generator([$functiondef_for->{glGetPointerv}], [])
+            ->('packer')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr|\Qvoid packer_glGetPointerv(Instruction *_instruction, GLenum pname, GLvoid ** params){\E|;
+        like $data, qr|\Qconst uint32_t _size = sizeof(GLenum*)+sizeof(GLvoid ***);\E|;
+        like $data, qr|\Q GLvoid *** _params_ptr = (GLvoid ***) _ptr; *_params_ptr++ = params; _ptr = (void*)(_params_ptr);\E|;
+    };
 };
 
 done_testing;

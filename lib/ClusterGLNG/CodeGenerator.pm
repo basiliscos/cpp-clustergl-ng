@@ -33,7 +33,7 @@ sub create_generator {
 <?= $f->return_type ?> <?= $f->name ?>(<?= $orig_params ?>);
 void packer_<?= $f->name ?>(<?= $packer_params ?>);
 void exec_<?= $f->name ?>(Instruction *_i, void* executor);
-? my @const_ptr_params = grep { $_->is_pointer && $_->is_const } @$params;
+? my @const_ptr_params = grep { $_->pointer && $_->is_const } @$params;
 ? for my $p (@const_ptr_params) {
 uint32_t <?= join('_', $f->name, $p->name, 'size') ?>(<?= $orig_params ?>); /* have to be provided manually */
 ? }
@@ -52,7 +52,7 @@ FUNDECL_END
 ? my $packer_params = $has_packer &&
 ?       join(', ', 'my_instruction', map { $_->name } @$params);
 ? my $packer_name = "packer_" . $f->name;
-? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my @pointer_params = grep { $_->pointer && !$_->is_const } @$params;
 ? my $need_reply = $f->return_type ne 'void' || @pointer_params;
 
 
@@ -133,8 +133,8 @@ SIGNATURE_END
                 my $template = Text::MicroTemplate->new(template => <<'PACKED_DUMPER_END', escape_func => undef);
 ? my ($f, $print_hint_for) = @_;
 ? my $params = $f->parameters;
-? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
-? my @dumpable_params = grep { !$_->is_pointer && !$_->fixed_size } @$params;
+? my @pointer_params = grep { $_->pointer && !$_->is_const } @$params;
+? my @dumpable_params = grep { !$_->pointer && !$_->fixed_size } @$params;
 ? my $need_reply = $f->return_type ne 'void' || @pointer_params;
 void dump_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', ($need_reply? ('int direction'): ()) ) ?>){
         const char* prefix = <?= $need_reply ? 'direction == DIRECTION_FORWARD ? "[>>]" : "[<<]"' : '""' ?>;
@@ -162,7 +162,7 @@ PACKED_DUMPER_END
 void cglng_fill_packed_dumpers(void *location) {
     CGLNG_simple_function* ptr = (CGLNG_simple_function*)location;
 ? for my $f (@$functions) {
-?   my @pointer_params = grep { $_->is_pointer && !$_->is_const } @{ $f->parameters };
+?   my @pointer_params = grep { $_->pointer && !$_->is_const } @{ $f->parameters };
 ?   my $need_reply = $f->return_type ne 'void' || @pointer_params;
     *ptr++ =<?= $need_reply? '(CGLNG_simple_function)(' : '' ?> &dump_<?= $f->name ?><?= $need_reply? ')' : '' ?>;
 ? }
@@ -187,8 +187,8 @@ NAMES_LIST_END
                 my $template = Text::MicroTemplate->new(template => <<'PACKED_EXECUTOR_END', escape_func => undef);
 ? my ($f) = @_;
 ? my $params = $f->parameters;
-? my @pointer_params = grep { $_->is_pointer && !$_->is_const } @$params;
-? my @dumpable_params = grep { !$_->is_pointer && !$_->fixed_size } @$params;
+? my @pointer_params = grep { $_->pointer && !$_->is_const } @$params;
+? my @dumpable_params = grep { !$_->pointer && !$_->fixed_size } @$params;
 ? my $need_reply = $f->return_type ne 'void' || @pointer_params;
 void exec_<?= $f->name ?>(<?= join(', ', 'Instruction *_i', 'void* executor') ?>){
 ?   if (@$params) {
@@ -241,8 +241,8 @@ PE_LIST_END
 ? my $params = $f->parameters;
 ? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
 ? my $orig_params = join(', ', map { $_->name } @$params);
-? my @pointer_params = grep { $_->is_pointer && $_->is_const } @$params;
-? my @pointer_return_params = grep { $_->is_pointer && !$_->is_const } @$params;
+? my @pointer_params = grep { $_->pointer && $_->is_const } @$params;
+? my @pointer_return_params = grep { $_->pointer && !$_->is_const } @$params;
 ? my @fixed_params = grep { $_->fixed_size } @$params;
 ? my $need_reply = $f->return_type ne 'void' || @pointer_return_params;
 
@@ -268,11 +268,11 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', 'int direction') ?
      }
 ? } else {
      if (direction == DIRECTION_FORWARD ) {
-?      my @ptr_sizes = grep { $_->is_pointer && $_->is_const } @$params;
+?      my @ptr_sizes = grep { $_->pointer && $_->is_const } @$params;
 ?      for my $p (@ptr_sizes) {
             uint32_t size_for_<?= $p->name ?> = <?= $f->name ?>_<?= $p->name ?>_size(<?= $orig_params ?>);
 ?      }
-?      my @sizes =  map { !(($_->is_pointer && $_->is_const) || $_->fixed_size)
+?      my @sizes =  map { !(($_->pointer && $_->is_const) || $_->fixed_size)
 ?                         ? 'sizeof(' . $_->name . ')'
 ?                         : $_->fixed_size
 ?                         ? '( ' . $_->fixed_size . ' * sizeof(' . $_->type(0) . '))'
@@ -284,14 +284,14 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', 'int direction') ?
 ?         my $p_type = $p->type(0) . ($p->fixed_size? '*' : '') . '*';
 ?         my $ptr_name = '_serialized_' . $p->name . '_ptr';
 ?         my $size_var = "size_for_".  $p->name;
-?         if ( !($p->is_pointer && $p->is_const) && !$p->fixed_size ) {
+?         if ( !($p->pointer && $p->is_const) && !$p->fixed_size ) {
             <?= $p_type ?> <?= $ptr_name ?> = (<?= $p_type ?>) _serialized_ptr;
             *<?= $ptr_name ?>++ = <?= $p->name ?>; _serialized_ptr = (char*) <?= $ptr_name ?>;
 ?         } elsif ( $p->fixed_size ) {
             uint32_t <?= $size_var ?> = ( <?= $p->fixed_size ?> * sizeof( <?= $p->type(0) ?> ));
             memcpy(_serialized_ptr, <?= $p->name ?>, <?= $size_var ?> );
             _serialized_ptr += <?= $size_var ?>;
-?         } elsif ( $p->is_pointer && $p->is_const) {
+?         } elsif ( $p->pointer && $p->is_const) {
             uint32_t* <?= $ptr_name ?> = (uint32_t*) _serialized_ptr;
             *<?= $ptr_name ?>++ = <?=  $size_var ?>; _serialized_ptr = (char*) <?= $ptr_name ?>;
             memcpy(_serialized_ptr, <?= $p->name ?>, <?= $size_var ?>); _serialized_ptr += <?= $size_var ?>;

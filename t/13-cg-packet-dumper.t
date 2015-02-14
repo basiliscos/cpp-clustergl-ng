@@ -72,6 +72,14 @@ test_codegen {
         like $data, qr/\Qconst char* prefix = "";\E/;
         like $data, qr/\QLOG("%s glLoadTransposeMatrixd()\n", prefix );\E/;
     };
+
+    subtest "glGetPointerv" => sub {
+        create_generator([$functiondef_for->{glGetPointerv}], [])
+            ->('packed_dumper')->(Scalar->new(\my $data));
+        ok $data;
+        print "data: $data\n";
+        like $data, qr|\QLOG("%s glGetPointerv(pname = %u)\n", prefix, pname );\E|;
+    };
 };
 
 done_testing;
