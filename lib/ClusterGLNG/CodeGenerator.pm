@@ -26,8 +26,8 @@ sub create_generator {
             }
             $output->print("\n") if(@$typedefs);
             for my $f (@$functions) {
-                $output->print(render_mt(<<'FUNDECL_END', $f)->as_string);
-? my ($f) = @_;
+                $output->print(render_mt(<<'FUNDECL_END', $f, $skip)->as_string);
+? my ($f, $skip) = @_;
 ? my $params = $f->parameters;
 ? my @declared_params = map { $_->type(1).' '. $_->name.($_->fixed_size? '['.$_->fixed_size.']' : '') } @$params;
 ? my $orig_params = join(', ', @declared_params);
@@ -36,9 +36,11 @@ sub create_generator {
 <?= $f->return_type ?> <?= $f->name ?>(<?= $orig_params ?>);
 void packer_<?= $f->name ?>(<?= $packer_params ?>);
 void exec_<?= $f->name ?>(Instruction *_i, void* executor);
-? my @const_ptr_params = grep { $_->pointer && $_->is_const } @$params;
-? for my $p (@const_ptr_params) {
+? unless (exists $skip->{ 'NO_serializer_' . $f->name }) {
+?   my @const_ptr_params = grep { $_->pointer && $_->is_const } @$params;
+?   for my $p (@const_ptr_params) {
 uint32_t <?= join('_', $f->name, $p->name, 'size') ?>(<?= $orig_params ?>); /* have to be provided manually */
+?   }
 ? }
 FUNDECL_END
             }
@@ -238,6 +240,7 @@ PE_LIST_END
         serializer => sub {
             my ($output) = @_;
             for my $f (@$functions) {
+                next if exists $skip->{'NO_serializer_' . $f->name};
                 $output->print(render_mt(<<'SERIALIZER_END', $f)->as_string);
 ? my ($f) = @_;
 ? my $name = 'serializer_' . $f->name;

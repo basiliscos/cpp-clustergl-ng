@@ -40,6 +40,15 @@ test_codegen {
         like $data, qr/\Q}\E/;
     };
 
+    subtest "no serializer for glClear, " => sub {
+        create_generator(
+            functions => [$functiondef_for->{glClear}],
+            typedefs  => [],
+            skip      => {NO_serializer_glClear => 1},
+        )->('serializer')->(Scalar->new(\my $data));
+        ok !$data, "glClear serializer should not be generated";
+    };
+
     subtest "simple return result, glIsEnabled" => sub {
         create_generator(
             functions => [$functiondef_for->{glIsEnabled}],
