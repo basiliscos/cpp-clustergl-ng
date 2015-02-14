@@ -1,6 +1,34 @@
 #include "generated.h"
 #include "GL/gl.h"
 
+inline uint32_t _type_size(GLenum type){
+    uint32_t item_size = type == GL_BYTE
+        ? sizeof(GLbyte)
+        : type == GL_UNSIGNED_BYTE
+        ? sizeof(GLubyte)
+        : type == GL_SHORT
+        ? sizeof(GLshort)
+        : type == GL_UNSIGNED_SHORT
+        ? sizeof(GLushort)
+        : type == GL_INT
+        ? sizeof(GLint)
+        : type == GL_UNSIGNED_INT
+        ? sizeof(GLuint)
+        : type == GL_FLOAT
+        ? sizeof(GLfloat)
+        : type == GL_2_BYTES
+        ? sizeof(GLbyte) * 2
+        : type == GL_3_BYTES
+        ? sizeof(GLbyte) * 3
+        : type == GL_4_BYTES
+        ? sizeof(GLbyte) * 4
+        : 0;
+    if(!item_size) {
+        LOG("Cannot determine list item size for type %d\n", type);
+        abort();
+    }
+}
+
 uint32_t glPolygonStipple_mask_size(const GLubyte * mask){
     return sizeof(GLubyte) * 32 * 32;
 }
@@ -28,110 +56,307 @@ uint32_t glMultMatrixf_m_size(const GLfloat * m){
     return sizeof(GLfloat) * 16;
 }
 uint32_t glCallLists_lists_size(GLsizei n, GLenum type, const GLvoid * lists){
-    uint32_t item_size = type == GL_BYTE
-        ? sizeof(GLbyte)
-        : type == GL_UNSIGNED_BYTE
-        ? sizeof(GLubyte)
-        : type == GL_SHORT
-        ? sizeof(GLshort)
-        : type == GL_UNSIGNED_SHORT
-        ? sizeof(GLushort)
-        : type == GL_INT
-        ? sizeof(GLint)
-        : type == GL_UNSIGNED_INT
-        ? sizeof(GLuint)
-        : type == GL_FLOAT
-        ? sizeof(GLfloat)
-        : type == GL_2_BYTES
-        ? sizeof(GLbyte) * 2
-        : type == GL_3_BYTES
-        ? sizeof(GLbyte) * 3
-        : type == GL_4_BYTES
-        ? sizeof(GLbyte) * 4
-        : 0;
-    if(!item_size) {
-        LOG("Cannot determine list item size for type %d\n", type);
-        abort();
-    }
-    return item_size * n;
+    return _type_size(type) * n;
 }
 
-uint32_t glVertex2dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glVertex2fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glVertex2iv_v_size(const GLint * v){ abort(); }
-uint32_t glVertex2sv_v_size(const GLshort * v){ abort(); }
-uint32_t glVertex3dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glVertex3fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glVertex3iv_v_size(const GLint * v){ abort(); }
-uint32_t glVertex3sv_v_size(const GLshort * v){ abort(); }
-uint32_t glVertex4dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glVertex4fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glVertex4iv_v_size(const GLint * v){ abort(); }
-uint32_t glVertex4sv_v_size(const GLshort * v){ abort(); }
-uint32_t glNormal3bv_v_size(const GLbyte * v){ abort(); }
-uint32_t glNormal3dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glNormal3fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glNormal3iv_v_size(const GLint * v){ abort(); }
-uint32_t glNormal3sv_v_size(const GLshort * v){ abort(); }
-uint32_t glIndexdv_c_size(const GLdouble * c){ abort(); }
-uint32_t glIndexfv_c_size(const GLfloat * c){ abort(); }
-uint32_t glIndexiv_c_size(const GLint * c){ abort(); }
-uint32_t glIndexsv_c_size(const GLshort * c){ abort(); }
-uint32_t glIndexubv_c_size(const GLubyte * c){ abort(); }
-uint32_t glColor3bv_v_size(const GLbyte * v){ abort(); }
-uint32_t glColor3dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glColor3fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glColor3iv_v_size(const GLint * v){ abort(); }
-uint32_t glColor3sv_v_size(const GLshort * v){ abort(); }
-uint32_t glColor3ubv_v_size(const GLubyte * v){ abort(); }
-uint32_t glColor3uiv_v_size(const GLuint * v){ abort(); }
-uint32_t glColor3usv_v_size(const GLushort * v){ abort(); }
-uint32_t glColor4bv_v_size(const GLbyte * v){ abort(); }
-uint32_t glColor4dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glColor4fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glColor4iv_v_size(const GLint * v){ abort(); }
-uint32_t glColor4sv_v_size(const GLshort * v){ abort(); }
-uint32_t glColor4ubv_v_size(const GLubyte * v){ abort(); }
-uint32_t glColor4uiv_v_size(const GLuint * v){ abort(); }
-uint32_t glColor4usv_v_size(const GLushort * v){ abort(); }
-uint32_t glTexCoord1dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glTexCoord1fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glTexCoord1iv_v_size(const GLint * v){ abort(); }
-uint32_t glTexCoord1sv_v_size(const GLshort * v){ abort(); }
-uint32_t glTexCoord2dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glTexCoord2fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glTexCoord2iv_v_size(const GLint * v){ abort(); }
-uint32_t glTexCoord2sv_v_size(const GLshort * v){ abort(); }
-uint32_t glTexCoord3dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glTexCoord3fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glTexCoord3iv_v_size(const GLint * v){ abort(); }
-uint32_t glTexCoord3sv_v_size(const GLshort * v){ abort(); }
-uint32_t glTexCoord4dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glTexCoord4fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glTexCoord4iv_v_size(const GLint * v){ abort(); }
-uint32_t glTexCoord4sv_v_size(const GLshort * v){ abort(); }
-uint32_t glRasterPos2dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glRasterPos2fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glRasterPos2iv_v_size(const GLint * v){ abort(); }
-uint32_t glRasterPos2sv_v_size(const GLshort * v){ abort(); }
-uint32_t glRasterPos3dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glRasterPos3fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glRasterPos3iv_v_size(const GLint * v){ abort(); }
-uint32_t glRasterPos3sv_v_size(const GLshort * v){ abort(); }
-uint32_t glRasterPos4dv_v_size(const GLdouble * v){ abort(); }
-uint32_t glRasterPos4fv_v_size(const GLfloat * v){ abort(); }
-uint32_t glRasterPos4iv_v_size(const GLint * v){ abort(); }
-uint32_t glRasterPos4sv_v_size(const GLshort * v){ abort(); }
-uint32_t glRectdv_v1_size(const GLdouble * v1, const GLdouble * v2){ abort(); }
-uint32_t glRectdv_v2_size(const GLdouble * v1, const GLdouble * v2){ abort(); }
-uint32_t glRectfv_v1_size(const GLfloat * v1, const GLfloat * v2){ abort(); }
-uint32_t glRectfv_v2_size(const GLfloat * v1, const GLfloat * v2){ abort(); }
-uint32_t glRectiv_v1_size(const GLint * v1, const GLint * v2){ abort(); }
-uint32_t glRectiv_v2_size(const GLint * v1, const GLint * v2){ abort(); }
-uint32_t glRectsv_v1_size(const GLshort * v1, const GLshort * v2){ abort(); }
-uint32_t glRectsv_v2_size(const GLshort * v1, const GLshort * v2){ abort(); }
-uint32_t glVertexPointer_ptr_size(GLint size, GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); }
-uint32_t glNormalPointer_ptr_size(GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); }
+uint32_t glVertex2dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 2;
+}
+
+uint32_t glVertex2fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 2;
+}
+
+uint32_t glVertex2iv_v_size(const GLint * v){
+    return sizeof(GLint) * 2 ;
+}
+
+uint32_t glVertex2sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 2;
+}
+
+uint32_t glVertex3dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 3;
+}
+
+uint32_t glVertex3fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 3;
+}
+
+uint32_t glVertex3iv_v_size(const GLint * v){
+    return sizeof(GLint) * 3;
+}
+
+uint32_t glVertex3sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 3;
+}
+
+uint32_t glVertex4dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 4;
+}
+
+uint32_t glVertex4fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 4;
+}
+
+uint32_t glVertex4iv_v_size(const GLint * v){
+    return sizeof(GLint) * 4;
+}
+
+uint32_t glVertex4sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 4;
+}
+
+uint32_t glNormal3bv_v_size(const GLbyte * v){
+    return sizeof(GLbyte) * 3;
+}
+
+uint32_t glNormal3dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 3;
+}
+
+uint32_t glNormal3fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 3;
+}
+
+uint32_t glNormal3iv_v_size(const GLint * v){
+    return sizeof(GLint) * 3;
+}
+
+uint32_t glNormal3sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 3;
+}
+
+uint32_t glIndexdv_c_size(const GLdouble * c){
+    return sizeof(GLdouble);
+}
+
+uint32_t glIndexfv_c_size(const GLfloat * c){
+    return sizeof(GLfloat);
+}
+
+uint32_t glIndexiv_c_size(const GLint * c){
+    return sizeof(GLint);
+}
+
+uint32_t glIndexsv_c_size(const GLshort * c){
+    return sizeof(GLshort);
+}
+
+uint32_t glIndexubv_c_size(const GLubyte * c){
+    return sizeof(GLubyte);
+}
+
+uint32_t glColor3bv_v_size(const GLbyte * v){
+    return sizeof(GLbyte) * 3;
+}
+
+uint32_t glColor3dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 3;
+}
+
+uint32_t glColor3fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 3;
+}
+
+uint32_t glColor3iv_v_size(const GLint * v){
+    return sizeof(GLint) * 3;
+}
+
+uint32_t glColor3sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 3;
+}
+
+uint32_t glColor3ubv_v_size(const GLubyte * v){
+    return sizeof(GLubyte) * 3;
+}
+
+uint32_t glColor3uiv_v_size(const GLuint * v){
+    return sizeof(GLuint) * 3;
+}
+
+uint32_t glColor3usv_v_size(const GLushort * v){
+    return sizeof(GLushort) * 3;
+}
+
+uint32_t glColor4bv_v_size(const GLbyte * v){
+    return sizeof(GLbyte) * 4;
+}
+
+uint32_t glColor4dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 4;
+}
+
+uint32_t glColor4fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 4;
+}
+
+uint32_t glColor4iv_v_size(const GLint * v){
+    return sizeof(GLint) * 4;
+}
+
+uint32_t glColor4sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 4;
+}
+
+uint32_t glColor4ubv_v_size(const GLubyte * v){
+    return sizeof(GLubyte) * 4;
+}
+
+uint32_t glColor4uiv_v_size(const GLuint * v){
+    return sizeof(GLuint) * 4;
+}
+
+uint32_t glColor4usv_v_size(const GLushort * v){
+    return sizeof(GLushort) * 4;
+}
+
+uint32_t glTexCoord1dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble);
+}
+
+uint32_t glTexCoord1fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat);
+}
+
+uint32_t glTexCoord1iv_v_size(const GLint * v){
+    return sizeof(GLint);
+}
+
+uint32_t glTexCoord1sv_v_size(const GLshort * v){
+    return sizeof(GLshort);
+}
+
+uint32_t glTexCoord2dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 2;
+}
+
+uint32_t glTexCoord2fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 2;
+}
+
+uint32_t glTexCoord2iv_v_size(const GLint * v){
+    return sizeof(GLint) * 2;
+}
+
+uint32_t glTexCoord2sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 2;
+}
+
+uint32_t glTexCoord3dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 3;
+}
+
+uint32_t glTexCoord3fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 3;
+}
+
+uint32_t glTexCoord3iv_v_size(const GLint * v){
+    return sizeof(GLint) * 3;
+}
+
+uint32_t glTexCoord3sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 3;
+}
+
+uint32_t glTexCoord4dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 4;
+}
+
+uint32_t glTexCoord4fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 4;
+}
+
+uint32_t glTexCoord4iv_v_size(const GLint * v){
+    return sizeof(GLint) * 4;
+}
+
+uint32_t glTexCoord4sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 4;
+}
+
+uint32_t glRasterPos2dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 2;
+}
+
+uint32_t glRasterPos2fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 2;
+}
+
+uint32_t glRasterPos2iv_v_size(const GLint * v){
+    return sizeof(GLint) * 2;
+}
+
+uint32_t glRasterPos2sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 2;
+}
+
+uint32_t glRasterPos3dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 3;
+}
+
+uint32_t glRasterPos3fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 3;
+}
+
+uint32_t glRasterPos3iv_v_size(const GLint * v){
+    return sizeof(GLint) * 3;
+}
+
+uint32_t glRasterPos3sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 3;
+}
+
+uint32_t glRasterPos4dv_v_size(const GLdouble * v){
+    return sizeof(GLdouble) * 4;
+}
+
+uint32_t glRasterPos4fv_v_size(const GLfloat * v){
+    return sizeof(GLfloat) * 4;
+}
+
+uint32_t glRasterPos4iv_v_size(const GLint * v){
+    return sizeof(GLint) * 4;
+}
+
+uint32_t glRasterPos4sv_v_size(const GLshort * v){
+    return sizeof(GLshort) * 4;
+}
+
+uint32_t glRectdv_v1_size(const GLdouble * v1, const GLdouble * v2){
+    return sizeof(GLdouble) * 2;
+}
+
+uint32_t glRectdv_v2_size(const GLdouble * v1, const GLdouble * v2){
+    return sizeof(GLdouble) * 2;
+}
+
+uint32_t glRectfv_v1_size(const GLfloat * v1, const GLfloat * v2){
+    return sizeof(GLfloat) * 2;
+}
+
+uint32_t glRectfv_v2_size(const GLfloat * v1, const GLfloat * v2){
+    return sizeof(GLfloat) * 2;
+}
+
+uint32_t glRectiv_v1_size(const GLint * v1, const GLint * v2){
+    return sizeof(GLint) * 2;
+}
+
+uint32_t glRectiv_v2_size(const GLint * v1, const GLint * v2){
+    return sizeof(GLint) * 2;
+}
+
+uint32_t glRectsv_v1_size(const GLshort * v1, const GLshort * v2){
+    return sizeof(GLshort) * 2;
+}
+
+uint32_t glRectsv_v2_size(const GLshort * v1, const GLshort * v2){
+    return sizeof(GLshort) * 2;
+}
+
+uint32_t glVertexPointer_ptr_size(GLint size, GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); };
+uint32_t glNormalPointer_ptr_size(GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); };
 uint32_t glColorPointer_ptr_size(GLint size, GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); }
 uint32_t glIndexPointer_ptr_size(GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); }
 uint32_t glTexCoordPointer_ptr_size(GLint size, GLenum type, GLsizei stride, const GLvoid * ptr){ abort(); }
