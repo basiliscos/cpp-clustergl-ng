@@ -116,7 +116,7 @@ void <?= $name ?>(<?= join(', ', 'Instruction *_instruction', @declared_params) 
 SIGNATURE_END
             }
         },
-        packed_dumper => sub {
+        'packed/dumper' => sub {
             my %print_hint_for = (
                 GLenum     => 'u',
                 GLboolean  => 'uc',
@@ -160,7 +160,7 @@ PACKED_DUMPER_END
                 $output->print(eval($template->code)->($f, \%print_hint_for));
             }
         },
-        packed_dumper_list => sub {
+        'packed/dumper/list' => sub {
             my ($output) = @_;
             $output->print(render_mt(<<'PD_LIST_END', $functions)->as_string);
 ? my ($functions) = @_;
@@ -186,7 +186,7 @@ const char **cglng_function_names = (const char*[]) {
 NAMES_LIST_END
                 $output->print(eval($template->code)->($functions));
         },
-        packed_executor => sub {
+        'packed/executor' => sub {
             my ($output) = @_;
             for my $f (@$functions) {
                 my $template = Text::MicroTemplate->new(template => <<'PACKED_EXECUTOR_END', escape_func => undef);
@@ -225,7 +225,7 @@ PACKED_EXECUTOR_END
                 $output->print(eval($template->code)->($f));
             }
         },
-        packed_executor_list => sub {
+        'packed/executor/list' => sub {
             my ($output) = @_;
             $output->print(render_mt(<<'PE_LIST_END', $functions)->as_string);
 ? my ($functions) = @_;

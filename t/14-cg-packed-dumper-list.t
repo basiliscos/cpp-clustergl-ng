@@ -17,7 +17,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glPushMatrix}],
             typedefs  => [],
-        )->('packed_dumper_list')->(Scalar->new(\my $data));
+        )->('packed/dumper/list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid cglng_fill_packed_dumpers(void *location) {\E/;
@@ -29,7 +29,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glIsEnabled}],
             typedefs  => [],
-        )->('packed_dumper_list')->(Scalar->new(\my $data));
+        )->('packed/dumper/list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid cglng_fill_packed_dumpers(void *location) {\E/;

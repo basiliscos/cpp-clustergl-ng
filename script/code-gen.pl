@@ -96,7 +96,7 @@ START
         create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
-    elsif ($role eq 'packed_dumper') {
+    elsif ($role eq 'packed/dumper') {
         my $file = path($output_dir, 'generated_packed_dumper.cpp');
         print "generating $file\n";
         my $fh = $file->filehandle('>');
@@ -108,7 +108,7 @@ START
 
 START
         create_generator(%context)->($role)->($fh);
-        create_generator(%context)->('packed_dumper_list')->($fh);
+        create_generator(%context)->('packed/dumper/list')->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'function_names') {
@@ -122,7 +122,7 @@ START
         create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
-    elsif ($role eq 'packed_executor') {
+    elsif ($role eq 'packed/executor') {
         my $file = path($output_dir, 'generated_packed_executor.cpp');
         print "generating $file\n";
         my $fh = $file->filehandle('>');
@@ -134,7 +134,7 @@ START
 
 PACKED_EXECUTOR_START
         create_generator(%context)->($role)->($fh);
-        create_generator(%context)->('packed_executor_list')->($fh);
+        create_generator(%context)->('packed/executor/list')->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'serializer') {

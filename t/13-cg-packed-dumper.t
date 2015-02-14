@@ -17,7 +17,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glPushMatrix}],
             typedefs  => [],
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid dump_glPushMatrix(Instruction *_i){\E/;
@@ -29,7 +29,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glIsEnabled}],
             typedefs  => [],
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid dump_glIsEnabled(Instruction *_i, int direction){\E/;
@@ -44,7 +44,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glClear}],
             typedefs  => [],
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst char* prefix = "";\E/;
@@ -56,7 +56,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glTexImage2D}],
             typedefs  => [],
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst char* prefix = "";\E/;
@@ -67,7 +67,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glReadPixels}],
             typedefs  => []
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst char* prefix = direction == DIRECTION_FORWARD ? "[>>]" : "[<<]";\E/;
@@ -78,7 +78,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glLoadTransposeMatrixd}],
             typedefs  => []
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst char* prefix = "";\E/;
@@ -89,7 +89,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glGetPointerv}],
             typedefs  => []
-        )->('packed_dumper')->(Scalar->new(\my $data));
+        )->('packed/dumper')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr|\QLOG("%s glGetPointerv(pname = %u)\n", prefix, pname );\E|;

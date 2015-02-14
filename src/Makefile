@@ -44,7 +44,10 @@ generated_capturer.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r capturer -o .
 
 generated_packed_dumper.cpp: gl.h.cache generated.h
-	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_dumper -o .
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed/dumper -o .
+
+generated_packed_executor.cpp: gl.h.cache generated.h
+	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed/executor -o .
 
 generated_function_names.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r function_names -o .
@@ -52,8 +55,6 @@ generated_function_names.cpp: gl.h.cache generated.h
 generated_serializer.cpp: gl.h.cache generated.h
 	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r serializer -o .
 
-generated_packed_executor.cpp: gl.h.cache generated.h
-	PERL5LIB=../lib ../script/code-gen.pl -c gl.h.cache -r packed_executor -o .
 
 ../runtime/libcglng-capture.so: $(OBJS_SHARED)
 	$(CXX) -shared -o $@ $^ $(CXXFLAGS) $(LDFLAGS) $(LINUX_LDFLAGS)

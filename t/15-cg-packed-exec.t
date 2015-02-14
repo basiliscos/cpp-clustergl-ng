@@ -17,7 +17,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glPushMatrix}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid exec_glPushMatrix(Instruction *_i, void* executor){\E/;
@@ -29,7 +29,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glClear}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid exec_glClear(Instruction *_i, void* executor){\E/;
@@ -42,7 +42,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glVertex2iv}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\QGLint * v = *_v_ptr++; my_ptr = _v_ptr;\E/;
@@ -54,7 +54,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glIsEnabled}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid exec_glIsEnabled(Instruction *_i, void* executor)\E/;
@@ -67,7 +67,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glGetString}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst GLubyte * _reply = (*my_glGetString)(name);\E/;
@@ -78,7 +78,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glTexImage2D}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Q(*my_glTexImage2D)(target, level, internalFormat, width, height, border, format, pixels);\E/;
@@ -89,7 +89,7 @@ test_codegen {
         create_generator(
             functions => [$functiondef_for->{glReadPixels}],
             typedefs  => [],
-        )->('packed_executor')->(Scalar->new(\my $data));
+        )->('packed/executor')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Q(*my_glReadPixels)(x, y, width, height, format, type, data)\E/;
