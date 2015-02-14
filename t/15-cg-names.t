@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "glPushMatrix" => sub {
-        create_generator([$functiondef_for->{glPushMatrix}], [])
-            ->('function_names')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glPushMatrix}],
+            typedefs  => [],
+        )->('function_names')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst char **cglng_function_names =\E/;

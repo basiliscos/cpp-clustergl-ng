@@ -12,7 +12,10 @@ use parent qw/Exporter/;
 our @EXPORT_OK = qw/create_generator/;
 
 sub create_generator {
-    my ($functions, $typedefs) = @_;
+    my %context = @_;
+    my $functions = $context{functions} // die("No functions context");
+    my $typedefs  = $context{typedefs } // die("No typedefs context");
+    my $skip      = $context{skip     } // {};
 
     my %generator_for = (
         declaration => sub {

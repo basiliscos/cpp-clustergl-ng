@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "glPushMatrix (no packer invocation)" => sub {
-        create_generator([$functiondef_for->{glPushMatrix}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glPushMatrix}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qextern "C" void glPushMatrix(){\E/;
@@ -26,8 +28,10 @@ test_codegen {
     };
 
     subtest "glClear, packer invocation" => sub {
-        create_generator([$functiondef_for->{glClear}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glClear}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qextern "C" void glClear(GLbitfield mask){\E/;
@@ -36,8 +40,10 @@ test_codegen {
     };
 
     subtest "glVertex2iv, packer invocation, no reply wait" => sub {
-        create_generator([$functiondef_for->{glVertex2iv}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glVertex2iv}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid glVertex2iv(const GLint * v){\E/;
@@ -46,8 +52,10 @@ test_codegen {
     };
 
     subtest "glIsEnabled, packer invocation, wait for result" => sub {
-        create_generator([$functiondef_for->{glIsEnabled}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glIsEnabled}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\QGLboolean glIsEnabled(GLenum cap){\E/;
@@ -59,8 +67,10 @@ test_codegen {
     };
 
     subtest "glLoadTransposeMatrixd, submittion" => sub {
-        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glLoadTransposeMatrixd}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid glLoadTransposeMatrixd(const GLdouble m[16]){\E/;
@@ -69,8 +79,10 @@ test_codegen {
     };
 
     subtest "glReadPixels, submittion, wait for indirect result" => sub {
-        create_generator([$functiondef_for->{glReadPixels}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glReadPixels}],
+            typedefs  => [],
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qmy_interceptor.intercept_with_reply(my_instruction)\E/;
@@ -78,8 +90,10 @@ test_codegen {
     };
 
     subtest "glGetString, waitfor result, return result as is" => sub {
-        create_generator([$functiondef_for->{glGetString}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glGetString}],
+            typedefs  => []
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst GLubyte * reply = (const GLubyte *)my_instruction->get_reply();\E/;
@@ -87,8 +101,10 @@ test_codegen {
     };
 
     subtest "glGetPointerv" => sub {
-        create_generator([$functiondef_for->{glGetPointerv}], [])
-            ->('capturer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glGetPointerv}],
+            typedefs  => []
+        )->('capturer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr|\Qextern "C" void glGetPointerv(GLenum pname, GLvoid ** params){\E|;

@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "glPushMatrix" => sub {
-        create_generator([$functiondef_for->{glPushMatrix}], [])
-            ->('packed_executor_list')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glPushMatrix}],
+            typedefs  => [],
+        )->('packed_executor_list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid cglng_fill_packed_executors(void *location) {\E/;
@@ -24,8 +26,10 @@ test_codegen {
     };
 
     subtest "glIsEnabled" => sub {
-        create_generator([$functiondef_for->{glIsEnabled}], [])
-            ->('packed_executor_list')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glIsEnabled}],
+            typedefs  => [],
+        )->('packed_executor_list')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid cglng_fill_packed_executors(void *location) {\E/;

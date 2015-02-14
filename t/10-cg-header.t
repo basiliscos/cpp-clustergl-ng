@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "simpe typedefs" => sub {
-        create_generator([], [ $typedef_for->{GLint}, $typedef_for->{GLvoid} ])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [],
+            typedefs  => [ $typedef_for->{GLint}, $typedef_for->{GLvoid}],
+         )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/typedef int GLint;/m;
@@ -23,8 +25,10 @@ test_codegen {
     };
 
     subtest "glClear declartion" => sub {
-        create_generator([$functiondef_for->{glClear}], [])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glClear}],
+            typedefs  => [],
+        )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid glClear(GLbitfield mask);\E/;
@@ -33,8 +37,10 @@ test_codegen {
     };
 
     subtest "glIsEnabled declartion" => sub {
-        create_generator([$functiondef_for->{glIsEnabled}], [])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glIsEnabled}],
+            typedefs  => [],
+        )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\QGLboolean glIsEnabled(GLenum cap);\E/;
@@ -42,8 +48,10 @@ test_codegen {
     };
 
     subtest "glTexImage2D declartion" => sub {
-        create_generator([$functiondef_for->{glTexImage2D}], [])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glTexImage2D}],
+            typedefs  => []
+        )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid glTexImage2D(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels);\E/;
@@ -52,8 +60,10 @@ test_codegen {
     };
 
     subtest "glLoadTransposeMatrixd declaration" => sub {
-        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glLoadTransposeMatrixd}],
+            typedefs  => []
+        )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid glLoadTransposeMatrixd(const GLdouble m[16]);\E/;
@@ -61,8 +71,10 @@ test_codegen {
     };
 
     subtest "glGetPointerv declaration" => sub {
-        create_generator([$functiondef_for->{glGetPointerv}], [])
-            ->('declaration')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glGetPointerv}],
+            typedefs  => [],
+        )->('declaration')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr{\Qvoid glGetPointerv(GLenum pname, GLvoid ** params);\E};

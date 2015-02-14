@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "dummy serializer, when no arguments glPushMatrix" => sub {
-        create_generator([$functiondef_for->{glPushMatrix}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glPushMatrix}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glPushMatrix(Instruction *_instruction, int direction){\E/;
@@ -24,8 +26,10 @@ test_codegen {
     };
 
     subtest "glClear, 1 simple arg" => sub {
-        create_generator([$functiondef_for->{glClear}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glClear}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glClear(Instruction *_instruction, int direction){\E/;
@@ -37,8 +41,10 @@ test_codegen {
     };
 
     subtest "simple return result, glIsEnabled" => sub {
-        create_generator([$functiondef_for->{glIsEnabled}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glIsEnabled}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glIsEnabled(Instruction *_instruction, int direction){\E/;
@@ -48,8 +54,10 @@ test_codegen {
     };
 
     subtest "glTexImage2D (const void* ptr), no return" => sub {
-        create_generator([$functiondef_for->{glTexImage2D}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glTexImage2D}],
+            typedefs  => []
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid serializer_glTexImage2D(Instruction *_instruction, int direction){\E/;
@@ -60,8 +68,10 @@ test_codegen {
     };
 
     subtest "glReadPixels (void* ptr)" => sub {
-        create_generator([$functiondef_for->{glReadPixels}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glReadPixels}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr{\Q/* overhead copy (should be ignored on deserialization) : data */\E};
@@ -73,8 +83,10 @@ test_codegen {
     };
 
     subtest "glVertexPointer (size/ptr parameter name)" => sub {
-        create_generator([$functiondef_for->{glVertexPointer}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glVertexPointer}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr{\Qmemcpy(_serialized_ptr, ptr, size_for_ptr); _serialized_ptr += size_for_ptr;\E};
@@ -82,8 +94,10 @@ test_codegen {
     };
 
     subtest "glLoadTransposeMatrixd, fixed size param" => sub {
-        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
-            ->('serializer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glLoadTransposeMatrixd}],
+            typedefs  => [],
+        )->('serializer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr{\Quint32_t _total_size = ( 16 * sizeof(GLdouble));\E};

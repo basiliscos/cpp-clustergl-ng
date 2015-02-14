@@ -14,8 +14,10 @@ test_codegen {
     my ($typedef_for, $functiondef_for) = @_;
 
     subtest "no packer, when no arguments glPushMatrix" => sub {
-        create_generator([$functiondef_for->{glPushMatrix}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glPushMatrix}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/void packer_glPushMatrix\(Instruction \*_instruction\){/;
@@ -24,8 +26,10 @@ test_codegen {
     };
 
     subtest "packer, on non-void result (glIsEnabled)" => sub {
-        create_generator([$functiondef_for->{glIsEnabled}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glIsEnabled}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid packer_glIsEnabled(Instruction *_instruction, GLenum cap){\E/;
@@ -35,8 +39,10 @@ test_codegen {
     };
 
     subtest "glClear, 1 simple arg" => sub {
-        create_generator([$functiondef_for->{glClear}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glClear}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid packer_glClear(Instruction *_instruction, GLbitfield mask){\E/;
@@ -46,8 +52,10 @@ test_codegen {
     };
 
     subtest "glTexImage2D (const void* ptr)" => sub {
-        create_generator([$functiondef_for->{glTexImage2D}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glTexImage2D}],
+            typedefs  => []
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid packer_glTexImage2D(Instruction *_instruction, GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLint border, GLenum format, const GLvoid * pixels){\E/;
@@ -56,16 +64,20 @@ test_codegen {
     };
 
     subtest "glReadPixels (void* ptr)" => sub {
-        create_generator([$functiondef_for->{glReadPixels}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glReadPixels}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\QGLvoid ** _data_ptr = (GLvoid **) _ptr; *_data_ptr++ = data; _ptr = (void*)(_data_ptr);\E/;
     };
 
     subtest "glVertexPointer (size/ptr parameter name)" => sub {
-        create_generator([$functiondef_for->{glVertexPointer}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glVertexPointer}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qconst uint32_t _size = sizeof(GLint*)+sizeof(GLenum*)+sizeof(GLsizei*)+sizeof(GLvoid **);\E/;
@@ -74,8 +86,10 @@ test_codegen {
     };
 
     subtest "glLoadTransposeMatrixd, fixed size param" => sub {
-        create_generator([$functiondef_for->{glLoadTransposeMatrixd}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glLoadTransposeMatrixd}],
+            typedefs  => [],
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr/\Qvoid packer_glLoadTransposeMatrixd(Instruction *_instruction, const GLdouble m[16]){\E/;
@@ -84,8 +98,10 @@ test_codegen {
     };
 
     subtest "glGetPointerv, ** pointer" => sub {
-        create_generator([$functiondef_for->{glGetPointerv}], [])
-            ->('packer')->(Scalar->new(\my $data));
+        create_generator(
+            functions => [$functiondef_for->{glGetPointerv}],
+            typedefs  => []
+        )->('packer')->(Scalar->new(\my $data));
         ok $data;
         print "data: $data\n";
         like $data, qr|\Qvoid packer_glGetPointerv(Instruction *_instruction, GLenum pname, GLvoid ** params){\E|;

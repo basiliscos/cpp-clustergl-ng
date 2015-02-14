@@ -36,15 +36,19 @@ if ($xml_ast && $cache_file) {
     my $xml = path($xml_ast)->slurp;
     my ($functions, $typedefs) = parse($xml, qr/$function_filter/);
     print "parsing complete\n";
-    store [$functions, $typedefs], $cache_file;
+    my $context = {
+        functions => $functions,
+        typedefs  => $typedefs,
+    };
+    store $context, $cache_file;
     print "Stored as cache $cache_file\n";
 }
 elsif ($role && $cache_file && $output_dir) {
-    my ($functions, $typedefs) = @{ retrieve($cache_file) };
+    my %context = %{ retrieve($cache_file) };
     print "$role\n";
     if ($role eq 'declaration') {
         my $file = path($output_dir, 'generated.h');
-        my $last_id = scalar(@$functions) -1;
+        my $last_id = scalar(@{ $context{functions} }) -1;
         print "generating $file\n";
         my $fh = $file->filehandle('>');
         print $fh <<START;
@@ -60,7 +64,7 @@ void cglng_fill_packed_executors(void *location);
 extern "C" const char **cglng_function_names;
 extern "C" {
 START
-        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator(%context)->($role)->($fh);
         print $fh <<END;
 }
 #endif /* GENERATED_H */
@@ -76,7 +80,7 @@ END
 #include "common.h"
 
 START
-        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'capturer') {
@@ -89,7 +93,7 @@ START
 #include "Interceptor.h"
 
 START
-        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'packed_dumper') {
@@ -103,8 +107,8 @@ START
 #include "Processor.h"
 
 START
-        create_generator($functions, $typedefs)->($role)->($fh);
-        create_generator($functions, $typedefs)->('packed_dumper_list')->($fh);
+        create_generator(%context)->($role)->($fh);
+        create_generator(%context)->('packed_dumper_list')->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'function_names') {
@@ -115,7 +119,7 @@ START
 #include "generated.h"
 
 START
-        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'packed_executor') {
@@ -129,8 +133,8 @@ START
 #include "Processor.h"
 
 PACKED_EXECUTOR_START
-        create_generator($functions, $typedefs)->($role)->($fh);
-        create_generator($functions, $typedefs)->('packed_executor_list')->($fh);
+        create_generator(%context)->($role)->($fh);
+        create_generator(%context)->('packed_executor_list')->($fh);
         print "$file successfully created\n";
     }
     elsif ($role eq 'serializer') {
@@ -144,7 +148,7 @@ PACKED_EXECUTOR_START
 #include "Processor.h"
 
 SERIALIZER_START
-        create_generator($functions, $typedefs)->($role)->($fh);
+        create_generator(%context)->($role)->($fh);
         print "$file successfully created\n";
     }
     else {
